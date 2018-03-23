@@ -1,0 +1,302 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
+
+    <!-- 标签 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@color/backgroundSecondary">
+
+        <View
+            android:id="@+id/divide_order_address_add_tag"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/item_border_color" />
+
+        <TextView
+            android:id="@+id/tv_order_address_add_tag_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignBaseline="@+id/et_order_address_add_tag"
+            android:layout_alignBottom="@+id/et_order_address_add_tag"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:text="标签"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_normal" />
+
+        <EditText
+            android:id="@+id/et_order_address_add_tag"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divide_order_address_add_tag"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@+id/tv_order_address_add_tag_title"
+            android:hint="标签"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/et_order_address_add_tag"
+            android:layout_marginTop="10dp"
+            android:background="@color/item_border_color" />
+    </RelativeLayout>
+
+    <!-- 姓名 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundSecondary">
+
+        <View
+            android:id="@+id/divide_order_address_add_name"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tv_order_address_add_name_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="姓名"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_normal" />
+
+        <EditText
+            android:id="@+id/et_order_address_add_name"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divide_order_address_add_name"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@+id/tv_order_address_add_name_title"
+            android:hint="姓名"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/et_order_address_add_name"
+            android:layout_marginTop="10dp"
+            android:background="@color/item_border_color" />
+    </RelativeLayout>
+
+    <!-- 电话 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundSecondary">
+
+        <View
+            android:id="@+id/divide_order_address_add_phone"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tv_order_address_add_phone_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="电话"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_normal" />
+
+        <EditText
+            android:id="@+id/et_order_address_add_phone"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divide_order_address_add_phone"
+            android:layout_marginStart="36dp"
+            android:layout_toEndOf="@+id/tv_order_address_add_phone_title"
+            android:hint="电话"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/et_order_address_add_phone"
+            android:layout_marginTop="10dp"
+            android:background="@color/item_border_color" />
+    </RelativeLayout>
+
+    <!-- 门牌号 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundSecondary">
+
+        <View
+            android:id="@+id/divide_order_address_add_unit"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tv_order_address_add_unit_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="Unit No."
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_normal" />
+
+        <EditText
+            android:id="@+id/et_order_address_add_unit"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divide_order_address_add_unit"
+            android:layout_marginStart="36dp"
+            android:layout_toEndOf="@+id/tv_order_address_add_unit_title"
+            android:hint="Unit No."
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/et_order_address_add_unit"
+            android:layout_marginTop="10dp"
+            android:background="@color/item_border_color" />
+    </RelativeLayout>
+
+    <!-- 大厦名字 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundSecondary">
+
+        <View
+            android:id="@+id/divide_order_address_add_building_name"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tv_order_address_add_building_name_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="Building Name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_normal" />
+
+        <EditText
+            android:id="@+id/et_order_address_add_building_name"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divide_order_address_add_building_name"
+            android:layout_marginStart="36dp"
+            android:layout_toEndOf="@+id/tv_order_address_add_building_name_title"
+            android:hint="Building Name"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/et_order_address_add_building_name"
+            android:layout_marginTop="10dp"
+            android:background="@color/item_border_color" />
+    </RelativeLayout>
+
+    <!-- 街道地址 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundSecondary">
+
+        <View
+            android:id="@+id/divide_order_address_add_street"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tv_order_address_add_street_title"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="Address"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize_normal" />
+
+        <EditText
+            android:id="@+id/et_order_address_add_street"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divide_order_address_add_street"
+            android:layout_marginStart="36dp"
+            android:layout_toEndOf="@+id/tv_order_address_add_street_title"
+            android:hint="Address"
+            android:textColor="@color/white"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/et_order_address_add_street"
+            android:layout_marginTop="10dp"
+            android:background="@color/item_border_color" />
+    </RelativeLayout>
+
+    <com.hulk.delivery.util.StateButton
+        android:id="@+id/btn_order_address_add_submit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:minWidth="40dp"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_title"
+        app:normalBackgroundColor="@color/item_default_color"
+        app:radius="4dp" />
+
+</LinearLayout>
