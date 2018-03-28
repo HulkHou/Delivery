@@ -87,4 +87,16 @@ dependencies {
 
     compile 'com.android.support:multidex:1.0.1'
 
+    //http
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.12'
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+
+    //json
+    compile 'com.alibaba:fastjson:1.2.41'
+    compile 'com.alibaba:fastjson:1.1.67.android'
+
 }

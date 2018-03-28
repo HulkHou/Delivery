@@ -3,11 +3,21 @@ package com.hulk.delivery;
 import android.app.Application;
 
 import com.boma.boma365.MyEventBusIndex;
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.IOException;
+
 import me.yokeyword.fragmentation.Fragmentation;
 import me.yokeyword.fragmentation.helper.ExceptionHandler;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -17,14 +27,15 @@ import me.yokeyword.fragmentation.helper.ExceptionHandler;
 public class MyApplication extends Application {
 
     private static MyApplication app;
-
-    public static MyApplication getInstance() {
-        return app;
-    }
+    private static OkHttpClient okHttpClient;
+    private static SharedPrefsCookiePersistor sharedPrefsCookiePersistor;
+    private static ClearableCookieJar cookieJar;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        initializeClient();
 
         Fragmentation.builder()
                 // 设置 栈视图 模式为 （默认）悬浮球模式   SHAKE: 摇一摇唤出  NONE：隐藏， 仅在Debug环境生效
@@ -45,5 +56,41 @@ public class MyApplication extends Application {
 
         app = this;
         EventBus.builder().addIndex(new MyEventBusIndex()).installDefaultEventBus();
+    }
+
+    public static MyApplication getInstance() {
+        return app;
+    }
+
+    private void initializeClient() {
+        sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(this);
+        cookieJar = new PersistentCookieJar(new SetCookieCache(), sharedPrefsCookiePersistor);
+
+        okHttpClient = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request()
+                                .newBuilder()
+                                .addHeader("Authorization", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwaG9uZSI6IjEzMDExMTEyMjIwIiwiZXhwIjoxNTIyMjMxOTc3fQ.2OukmW3fo3cLMQfPHt8QSTqCcOJUNHZP9xlPcX6Bfaw")
+                                .build();
+
+                        return chain.proceed(request);
+                    }
+                })
+                .build();
+    }
+
+    public static OkHttpClient getClient() {
+        return okHttpClient;
+    }
+
+    public static SharedPrefsCookiePersistor getSharedPrefsCookiePersistor() {
+        return sharedPrefsCookiePersistor;
+    }
+
+    public static ClearableCookieJar getClearableCookieJar() {
+        return cookieJar;
     }
 }

@@ -16,11 +16,19 @@ import com.hulk.delivery.R;
 import com.hulk.delivery.adapter.MainViewHolder;
 import com.hulk.delivery.adapter.SubAdapter;
 import com.hulk.delivery.adapter.TitleAdapter;
+import com.hulk.delivery.entity.ResponseDataAddressList;
+import com.hulk.delivery.entity.ResponseResult;
+import com.hulk.delivery.entity.TAddress;
+import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.ScreenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.fragmentation.SupportFragment;
 
 
@@ -37,7 +45,9 @@ public class OrderAddressFragment extends SupportFragment {
     private SubAdapter adapter_address_list;
     private DelegateAdapter adapter;
     private RecyclerView recyclerView;
-    private List<String> list = new ArrayList<>();
+    private List<TAddress> addressList = new ArrayList<>();
+
+    private ResponseDataAddressList responseDataAddressList;
 
     public OrderAddressFragment() {
         // Required empty public constructor
@@ -56,7 +66,7 @@ public class OrderAddressFragment extends SupportFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_order_address, container, false);
-        initView();
+        getAddressList();
         return view;
     }
 
@@ -124,26 +134,36 @@ public class OrderAddressFragment extends SupportFragment {
         adapter.addAdapter(adapter_address_list_title);
 
         //结果列表
-        for (int i = 0; i < 10; i++) {
-            list.add("abc");
-        }
         LinearLayoutHelper linearLayoutHelper = new LinearLayoutHelper();
-        adapter_address_list = new SubAdapter(_mActivity, linearLayoutHelper, list.size()) {
+        adapter_address_list = new SubAdapter(_mActivity, linearLayoutHelper, addressList.size()) {
             @Override
             public void onBindViewHolder(MainViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
+                TextView addressTag = holder.itemView.findViewById(R.id.address_tag);
+                TextView consignee = holder.itemView.findViewById(R.id.consignee);
+                TextView phone = holder.itemView.findViewById(R.id.phone);
+                TextView unitNo = holder.itemView.findViewById(R.id.unit_no);
+                TextView buildName = holder.itemView.findViewById(R.id.build_name);
+                TextView street = holder.itemView.findViewById(R.id.street);
+
+                addressTag.setText(addressList.get(position).getAddressTag());
+                consignee.setText(addressList.get(position).getConsignee());
+                phone.setText(addressList.get(position).getPhone());
+                unitNo.setText(addressList.get(position).getUnitNo());
+                buildName.setText(addressList.get(position).getBuildName());
+                street.setText(addressList.get(position).getStreet());
             }
 
             @Override
             public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_shop, parent, false);
+                        .inflate(R.layout.item_address_detail, parent, false);
                 return new MainViewHolder(itemView);
             }
 
             @Override
             public int getItemCount() {
-                return list.size();
+                return addressList.size();
             }
         };
         adapter.addAdapter(adapter_address_list);
@@ -162,5 +182,35 @@ public class OrderAddressFragment extends SupportFragment {
     public boolean onBackPressedSupport() {
         pop();
         return true;
+    }
+
+    private void getAddressList() {
+        Network.getUserApi().getAddressList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseResult<ResponseDataAddressList>>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            responseDataAddressList = (ResponseDataAddressList) responseResult.getData();
+                            addressList = responseDataAddressList.getList();
+                            initView();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        System.out.println("************");
+                    }
+                });
+    }
+
+    @Override
+    public void onSupportVisible() {
+        super.onSupportVisible();
+        getAddressList();
     }
 }

@@ -9,13 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.hulk.delivery.R;
+import com.hulk.delivery.entity.ResponseResult;
+import com.hulk.delivery.retrofit.Network;
 import com.schibstedspain.leku.LocationPickerActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.fragmentation.SupportFragment;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 
 /**
@@ -28,8 +38,32 @@ public class OrderAddAddressFragment extends SupportFragment {
     private static final String TAG = "OrderAddAddressFragment";
     private String address;
 
+    private String userId;
+    private String addressTag;
+    private Integer isDefault;
+    private String consignee;
+    private String phone;
+    private String street;
+    private String buildName;
+    private String unitNo;
+
+    @BindView(R.id.et_order_address_add_tag)
+    EditText tagView;
+
+    @BindView(R.id.et_order_address_add_name)
+    EditText nameView;
+
+    @BindView(R.id.et_order_address_add_phone)
+    EditText phoneView;
+
+    @BindView(R.id.et_order_address_add_unit)
+    EditText unitNoView;
+
+    @BindView(R.id.et_order_address_add_building_name)
+    EditText buildNameView;
+
     @BindView(R.id.et_order_address_add_street)
-    EditText street;
+    EditText streetView;
 
     public OrderAddAddressFragment() {
         // Required empty public constructor
@@ -91,7 +125,7 @@ public class OrderAddAddressFragment extends SupportFragment {
                 double longitude = data.getDoubleExtra(LocationPickerActivity.LONGITUDE, 0);
                 Log.d("LONGITUDE****", String.valueOf(longitude));
                 address = data.getStringExtra(LocationPickerActivity.LOCATION_ADDRESS);
-                street.setText(address);
+                streetView.setText(address);
                 Log.d("ADDRESS****", String.valueOf(address));
                 String postalcode = data.getStringExtra(LocationPickerActivity.ZIPCODE);
                 Log.d("POSTALCODE****", String.valueOf(postalcode));
@@ -109,7 +143,49 @@ public class OrderAddAddressFragment extends SupportFragment {
 
     @OnClick(R.id.btn_order_address_add_submit)
     public void addressAdd(View view) {
-        _mActivity.onBackPressed();
+        userId = "47";
+        addressTag = "my office";
+        isDefault = 1;
+        consignee = "hulk";
+        phone = "0172023067";
+        street = "jalan ampang";
+        buildName = "klcc";
+        unitNo = "1-1-11";
+
+        JSONObject result = new JSONObject();
+        try {
+            result.put("userId", userId);
+            result.put("addressTag", addressTag);
+            result.put("isDefault", isDefault);
+            result.put("consignee", consignee);
+            result.put("phone", phone);
+            result.put("street", street);
+            result.put("buildName", buildName);
+            result.put("unitNo", unitNo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), result.toString());
+
+        Network.getUserApi().doAddAddress(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseResult>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            _mActivity.onBackPressed();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        System.out.println("************");
+                    }
+                });
     }
 
     @Override

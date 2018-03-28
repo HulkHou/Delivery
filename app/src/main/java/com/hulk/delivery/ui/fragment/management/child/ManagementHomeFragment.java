@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.hulk.delivery.R;
 import com.hulk.delivery.adapter.ManagementAdapter;
 import com.hulk.delivery.entity.Videos;
-import com.hulk.delivery.ui.fragment.cart.CartFragment;
 import com.hulk.delivery.ui.fragment.management.ManagementFragment;
 import com.hulk.delivery.util.RecycleViewDivider;
 
@@ -53,7 +52,7 @@ public class ManagementHomeFragment extends SupportFragment {
     }
 
     private void initView(View view) {
-//RecyclerView的初始化
+        //RecyclerView的初始化
         mRecyclerView = view.findViewById(R.id.rcv_management);
         //创建线性LinearLayoutManager
         mLayoutManager = new LinearLayoutManager(getActivity());
