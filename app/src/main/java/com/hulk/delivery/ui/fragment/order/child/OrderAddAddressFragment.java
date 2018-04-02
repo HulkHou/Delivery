@@ -91,7 +91,7 @@ public class OrderAddAddressFragment extends SupportFragment {
     private void initView() {
         Intent intent = new LocationPickerActivity.Builder()
                 .withLocation(3.133333, 101.683333)
-                .withGeolocApiKey("AIzaSyD7AX_UBOgvnoIQFum7kCg-huJWB1chxbM")
+                .withGeolocApiKey("@string/API_KEY")
 //                .withSearchZone("ms_MY")
                 .shouldReturnOkOnBackPressed()
 //                .withStreetHidden()
@@ -165,9 +165,11 @@ public class OrderAddAddressFragment extends SupportFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //获取token
+        String authorization = Network.getAuthorization();
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), result.toString());
 
-        Network.getUserApi().doAddAddress(body)
+        Network.getUserApi().doAddAddress(authorization, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseResult>() {

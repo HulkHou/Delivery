@@ -184,8 +184,10 @@ public class OrderAddressFragment extends SupportFragment {
         return true;
     }
 
+    //获取AddressList
     private void getAddressList() {
-        Network.getUserApi().getAddressList()
+        String authorization = Network.getAuthorization();
+        Network.getUserApi().getAddressList(authorization)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseResult<ResponseDataAddressList>>() {

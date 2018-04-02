@@ -33,6 +33,7 @@ android {
         main {
             res.srcDirs =
                     [
+                            'src/main/res/layout/login',
                             'src/main/res/layout/profile',
                             'src/main/res/layout/management',
                             'src/main/res/layout/cart',
@@ -98,5 +99,12 @@ dependencies {
     //json
     compile 'com.alibaba:fastjson:1.2.41'
     compile 'com.alibaba:fastjson:1.1.67.android'
+
+    //material-dialogs
+    compile 'com.afollestad.material-dialogs:core:0.9.6.0'
+    compile 'com.afollestad.material-dialogs:commons:0.9.6.0'
+
+    //commons-lang
+    compile 'org.apache.commons:commons-lang3:3.6'
 
 }

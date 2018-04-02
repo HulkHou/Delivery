@@ -1,8 +1,15 @@
 package com.hulk.delivery.ui.fragment.order.child;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
@@ -22,8 +30,18 @@ import com.hulk.delivery.R;
 import com.hulk.delivery.adapter.MainViewHolder;
 import com.hulk.delivery.adapter.OrderHomeFragmentAdapter;
 import com.hulk.delivery.adapter.SubAdapter;
+import com.hulk.delivery.entity.GoogleAddressResponseResult;
+import com.hulk.delivery.entity.Results;
+import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.ui.fragment.login.LoginFragment;
 import com.hulk.delivery.util.ScreenUtil;
 
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
@@ -35,10 +53,17 @@ public class OrderHomeFragment extends SupportFragment {
     private FrameLayout mDrawerContent;
     private TabLayout mTab;
     private ViewPager mViewPager;
+    private TextView addressDesc;
 
     private DelegateAdapter adapter;
     private SubAdapter adapter_search;
     private SubAdapter adapter_address;
+
+    //定位都要通过LocationManager这个类实现
+    private LocationManager locationManager;
+    private String provider;
+    private String latlng;
+    private String formattedAddress;
 
     public static OrderHomeFragment newInstance() {
 
@@ -54,6 +79,8 @@ public class OrderHomeFragment extends SupportFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_home, container, false);
         initView(view);
+        //获取当前地址
+        getInfoFromLocation();
         return view;
     }
 
@@ -94,6 +121,14 @@ public class OrderHomeFragment extends SupportFragment {
                         mDrawerLayout.openDrawer(mDrawerContent);
                     }
                 });
+
+                ImageView message = holder.itemView.findViewById(R.id.message);
+                message.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        start(LoginFragment.newInstance());
+                    }
+                });
             }
         };
         adapter.addAdapter(adapter_search);
@@ -110,9 +145,9 @@ public class OrderHomeFragment extends SupportFragment {
             @Override
             public void onBindViewHolder(MainViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
-                final TextView addressDesc = holder.itemView.findViewById(R.id.address_desc);
+                addressDesc = holder.itemView.findViewById(R.id.address_desc);
+                addressDesc.setText(R.string.addressDesc);
                 final LinearLayout linearLayoutAddress = holder.itemView.findViewById(R.id.ll_address);
-                addressDesc.setText(R.string.address);
                 linearLayoutAddress.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -131,6 +166,113 @@ public class OrderHomeFragment extends SupportFragment {
 
     }
 
+    private void getInfoFromLocation() {
+        //获取定位服务
+        locationManager = (LocationManager) _mActivity.getSystemService(Context.LOCATION_SERVICE);
+        //获取当前可用的位置控制器
+        List<String> list = locationManager.getProviders(true);
+
+        if (list.contains(LocationManager.GPS_PROVIDER)) {
+            //是否为GPS位置控制器
+            provider = LocationManager.GPS_PROVIDER;
+        } else if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+            //是否为网络位置控制器
+            provider = LocationManager.NETWORK_PROVIDER;
+
+        } else {
+            Toast.makeText(_mActivity, "请检查网络或GPS是否打开",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(_mActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if (location != null) {
+            //获取当前位置，这里只用到了经纬度
+            String string = "纬度为：" + location.getLatitude() + ",经度为："
+                    + location.getLongitude();
+            updateView(location);
+        }
+
+
+        //绑定定位事件，监听位置是否改变
+        //第一个参数为控制器类型第二个参数为监听位置变化的时间间隔（单位：毫秒）
+        //第三个参数为位置变化的间隔（单位：米）第四个参数为位置监听器
+        locationManager.requestLocationUpdates(provider, 2000, 2,
+                locationListener);
+
+    }
+
+    LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onProviderEnabled(String arg0) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onProviderDisabled(String arg0) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onLocationChanged(Location arg0) {
+            // TODO Auto-generated method stub
+            // 更新当前经纬度
+            updateView(arg0);
+        }
+    };
+
+    private void updateView(Location location) {
+        latlng = location.getLatitude() + "," + location.getLongitude();
+        String googleAddressApiKey = getString(R.string.GOOGLE_ADDRESS_API_KEY);
+        Network.getGoogleApi().getAddressByGoogle(latlng, googleAddressApiKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<GoogleAddressResponseResult>() {
+                    @Override
+                    public void accept(@NonNull GoogleAddressResponseResult responseResult) throws Exception {
+                        String code = responseResult.getStatus();
+                        List<Results> resultsArrayList = responseResult.getResults();
+
+                        //status等于200时为查询成功
+                        if ("OK".equals(code)) {
+                            formattedAddress = resultsArrayList.get(0).getFormatted_address();
+                            addressDesc.setText(formattedAddress);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        System.out.println("************");
+                    }
+                });
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
+    }
+
     @Override
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
@@ -138,5 +280,4 @@ public class OrderHomeFragment extends SupportFragment {
                 getString(R.string.shop_title), getString(R.string.food_title)));
         mTab.setupWithViewPager(mViewPager);
     }
-
 }
