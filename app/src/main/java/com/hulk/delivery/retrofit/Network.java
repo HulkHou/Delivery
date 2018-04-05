@@ -41,7 +41,7 @@ public class Network {
     private static OkHttpClient okHttpClient;
     private static SharedPrefsCookiePersistor sharedPrefsCookiePersistor;
     private static ClearableCookieJar cookieJar;
-    private static final String PREF_INFO = "com.hulk.delivery.login.LOGIN_INFO";
+    private static final String AUTHORIZATION = "AUTHORIZATION";
     private static MyApplication app = MyApplication.getInstance();
     ;
     private static String authorization;
@@ -94,7 +94,7 @@ public class Network {
     //获取头信息用token
     public static String getAuthorization() {
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(app);
-        authorization = mPref.getString(PREF_INFO, "");
+        authorization = mPref.getString(AUTHORIZATION, "");
         return authorization;
     }
 

@@ -27,6 +27,8 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerViewHolder> {
     @Override
     public void onBindViewHolder(BannerViewHolder holder, int position) {
         holder.itemView.setTag(position);
+        holder.bannerTitle.setText(context.getResources().getStringArray(R.array.chiyidun)[position]);
+
     }
 
     @Override

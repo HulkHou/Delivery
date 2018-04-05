@@ -68,7 +68,7 @@ public class OrderFoodFragment extends SupportFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order_shop, container, false);
+        View view = inflater.inflate(R.layout.order_frag_shop, container, false);
         EventBusActivityScope.getDefault(_mActivity).register(this);
         initView(view);
         return view;
@@ -152,7 +152,6 @@ public class OrderFoodFragment extends SupportFragment
             public void onBindViewHolder(MainViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 RecyclerView recyclerView = holder.itemView.findViewById(R.id.banner);
-                final TextView textView = holder.itemView.findViewById(R.id.title);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_mActivity);
                 linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                 recyclerView.setLayoutManager(linearLayoutManager);
@@ -169,8 +168,6 @@ public class OrderFoodFragment extends SupportFragment
                     @Override
                     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                         super.onScrolled(recyclerView, dx, dy);
-                        int position = (int) recyclerView.findChildViewUnder(200, 200).getTag();
-                        textView.setText(getResources().getStringArray(R.array.chiyidun)[position]);
                     }
                 });
 

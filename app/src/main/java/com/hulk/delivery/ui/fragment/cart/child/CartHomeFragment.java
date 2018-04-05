@@ -54,7 +54,7 @@ public class CartHomeFragment extends SupportFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cart_home, container, false);
+        View view = inflater.inflate(R.layout.cart_frag_home, container, false);
         initView(view);
         return view;
     }

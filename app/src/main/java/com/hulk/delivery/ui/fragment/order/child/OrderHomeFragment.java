@@ -2,7 +2,9 @@ package com.hulk.delivery.ui.fragment.order.child;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +37,9 @@ import com.hulk.delivery.entity.GoogleAddressResponseResult;
 import com.hulk.delivery.entity.Results;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.ui.fragment.login.LoginFragment;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.ScreenUtil;
+import com.schibstedspain.leku.LocationPickerActivity;
 
 import java.util.List;
 
@@ -54,6 +59,7 @@ public class OrderHomeFragment extends SupportFragment {
     private TabLayout mTab;
     private ViewPager mViewPager;
     private TextView addressDesc;
+    private String address;
 
     private DelegateAdapter adapter;
     private SubAdapter adapter_search;
@@ -77,7 +83,7 @@ public class OrderHomeFragment extends SupportFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order_home, container, false);
+        View view = inflater.inflate(R.layout.order_frag_home, container, false);
         initView(view);
         //获取当前地址
         getInfoFromLocation();
@@ -151,7 +157,24 @@ public class OrderHomeFragment extends SupportFragment {
                 linearLayoutAddress.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        start(OrderAddressFragment.newInstance());
+                        if (LoginUtil.checkLogin(_mActivity)) {
+                            start(OrderAddressFragment.newInstance());
+                        } else {
+                            Intent intent = new LocationPickerActivity.Builder()
+                                    .withLocation(3.133333, 101.683333)
+                                    .withGeolocApiKey("@string/API_KEY")
+//                .withSearchZone("ms_MY")
+                                    .shouldReturnOkOnBackPressed()
+//                .withStreetHidden()
+//                .withCityHidden()
+//                .withZipCodeHidden()
+//                .withSatelliteViewHidden()
+                                    .build(getContext());
+
+                            intent.putExtra("test", "hulk");
+
+                            startActivityForResult(intent, 1);
+                        }
                     }
                 });
 
@@ -264,6 +287,31 @@ public class OrderHomeFragment extends SupportFragment {
                 });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                double latitude = data.getDoubleExtra(LocationPickerActivity.LATITUDE, 0);
+                Log.d("LATITUDE****", String.valueOf(latitude));
+                double longitude = data.getDoubleExtra(LocationPickerActivity.LONGITUDE, 0);
+                Log.d("LONGITUDE****", String.valueOf(longitude));
+                address = data.getStringExtra(LocationPickerActivity.LOCATION_ADDRESS);
+                addressDesc.setText(address);
+                Log.d("ADDRESS****", String.valueOf(address));
+                String postalcode = data.getStringExtra(LocationPickerActivity.ZIPCODE);
+                Log.d("POSTALCODE****", String.valueOf(postalcode));
+                Bundle bundle = data.getBundleExtra(LocationPickerActivity.TRANSITION_BUNDLE);
+                Log.d("BUNDLE TEXT****", bundle.getString("test"));
+                Address fullAddress = data.getParcelableExtra(LocationPickerActivity.ADDRESS);
+                if (fullAddress != null)
+                    Log.d("FULL ADDRESS****", fullAddress.toString());
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
 
     @Override
     public void onDestroy() {
@@ -279,5 +327,16 @@ public class OrderHomeFragment extends SupportFragment {
         mViewPager.setAdapter(new OrderHomeFragmentAdapter(getChildFragmentManager(),
                 getString(R.string.shop_title), getString(R.string.food_title)));
         mTab.setupWithViewPager(mViewPager);
+    }
+
+    //解决打开mDrawerLayout之后，点击手机返回键，直接退出activity问题
+    @Override
+    public boolean onBackPressedSupport() {
+        if (mDrawerLayout.isDrawerOpen(mDrawerContent)) {
+            mDrawerLayout.closeDrawers();
+            return true;
+        } else {
+            return super.onBackPressedSupport();
+        }
     }
 }

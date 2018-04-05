@@ -23,5 +23,7 @@
     <string name="loginFailure">登录失败</string>
     <string name="networkError">网络问题</string>
     <string name="agree">知道了！</string>
+    <string name="logoutSuccess">已登出！</string>
+
 
 </resources>

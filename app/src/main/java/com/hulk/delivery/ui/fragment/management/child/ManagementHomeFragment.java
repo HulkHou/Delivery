@@ -46,7 +46,7 @@ public class ManagementHomeFragment extends SupportFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_management_home, container, false);
+        View view = inflater.inflate(R.layout.management_frag_home, container, false);
         initView(view);
         return view;
     }

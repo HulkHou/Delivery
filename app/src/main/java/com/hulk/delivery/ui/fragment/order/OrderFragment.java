@@ -10,8 +10,6 @@ import com.hulk.delivery.R;
 import com.hulk.delivery.base.BaseMainFragment;
 import com.hulk.delivery.ui.fragment.order.child.OrderHomeFragment;
 
-import me.yokeyword.fragmentation.SupportFragment;
-
 
 /**
  * Created by hulk-out on 2018/3/14.
@@ -30,7 +28,7 @@ public class OrderFragment extends BaseMainFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order, container, false);
+        View view = inflater.inflate(R.layout.order_frag, container, false);
         return view;
     }
 

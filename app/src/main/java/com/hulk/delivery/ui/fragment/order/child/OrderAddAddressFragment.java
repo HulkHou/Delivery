@@ -81,7 +81,7 @@ public class OrderAddAddressFragment extends SupportFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_order_address_add, container, false);
+        view = inflater.inflate(R.layout.order_frag_address_add, container, false);
         ButterKnife.bind(this, view);
         initView();
         return view;

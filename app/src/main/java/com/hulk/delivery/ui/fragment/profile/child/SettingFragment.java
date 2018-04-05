@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hulk.delivery.R;
-import com.hulk.delivery.ui.fragment.login.LoginFragment;
-import com.hulk.delivery.ui.fragment.profile.ProfileFragment;
 import com.hulk.delivery.util.LoginUtil;
 
 import butterknife.BindView;
@@ -16,28 +16,30 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.yokeyword.fragmentation.SupportFragment;
 
+
 /**
  * Created by hulk-out on 2017/9/8.
  */
 
-public class ProfileHomeFragment extends SupportFragment {
+public class SettingFragment extends SupportFragment {
 
     private View view;
-    private static final String TAG = "ProfileHomeFragment";
-
-    //名字
-    @BindView(R.id.tv_profile_name)
-    TextView profileName;
+    private MaterialDialog.Builder builder;
+    private MaterialDialog dialog;
+    private static final String TAG = "SettingFragment";
 
 
-    public ProfileHomeFragment() {
+    @BindView(R.id.tv_profile_setting_cache)
+    TextView settingCache;
+
+    public SettingFragment() {
         // Required empty public constructor
     }
 
-    public static ProfileHomeFragment newInstance() {
+    public static SettingFragment newInstance() {
 
         Bundle args = new Bundle();
-        ProfileHomeFragment fragment = new ProfileHomeFragment();
+        SettingFragment fragment = new SettingFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,31 +48,34 @@ public class ProfileHomeFragment extends SupportFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.profile_frag_home, container, false);
+        view = inflater.inflate(R.layout.profile_frag_setting, container, false);
         ButterKnife.bind(this, view);
+        initToolbar();
         return view;
     }
 
-    //设置
-    @OnClick(R.id.rl_profile_setting_management)
-    public void setting(View view) {
-        if (LoginUtil.checkLogin(_mActivity)) {
-            start(SettingFragment.newInstance());
-        } else {
-            start(LoginFragment.newInstance());
-        }
+    //初始化工具栏
+    private void initToolbar() {
+
+    }
+
+    @OnClick(R.id.btn_setting_logout)
+    public void settingLogout(View view) {
+        LoginUtil.loginOut(_mActivity);
+        Toast.makeText(getActivity(), R.string.logoutSuccess, Toast.LENGTH_SHORT).show();
+        _mActivity.onBackPressed();
     }
 
     //当Fragment可见时调用此方法
     @Override
     public void onSupportVisible() {
-        super.onSupportVisible();
+        initToolbar();
     }
 
     @Override
     public boolean onBackPressedSupport() {
-        // 这里实际项目中推荐使用 EventBus接耦
-        ((ProfileFragment) getParentFragment()).onBackToFirstFragment();
+        pop();
         return true;
     }
+
 }

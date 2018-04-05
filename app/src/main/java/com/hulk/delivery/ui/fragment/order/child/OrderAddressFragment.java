@@ -65,7 +65,7 @@ public class OrderAddressFragment extends SupportFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_order_address, container, false);
+        view = inflater.inflate(R.layout.order_frag_address, container, false);
         getAddressList();
         return view;
     }
@@ -200,6 +200,8 @@ public class OrderAddressFragment extends SupportFragment {
                             responseDataAddressList = (ResponseDataAddressList) responseResult.getData();
                             addressList = responseDataAddressList.getList();
                             initView();
+                        } else {
+                            _mActivity.onBackPressed();
                         }
                     }
                 }, new Consumer<Throwable>() {

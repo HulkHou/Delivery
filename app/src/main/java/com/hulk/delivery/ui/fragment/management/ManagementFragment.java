@@ -34,7 +34,7 @@ public class ManagementFragment extends BaseMainFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_management, container, false);
+        mView = inflater.inflate(R.layout.management_frag, container, false);
         return mView;
     }
 

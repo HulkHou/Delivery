@@ -41,7 +41,8 @@ public class LoginFragment extends BaseMainFragment {
     private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     //SharedPreferences key
-    private static final String PREF_INFO = "com.hulk.delivery.login.LOGIN_INFO";
+    private static final String AUTHORIZATION = "AUTHORIZATION";
+    private static final String IS_LOGIN = "IS_LOGIN";
     private final SharedPreferences mPref;
     private SharedPreferences.Editor mEditor;
 
@@ -150,7 +151,8 @@ public class LoginFragment extends BaseMainFragment {
 
                             //设置token
                             mEditor = mPref.edit();
-                            mEditor.putString(PREF_INFO, authorization);
+                            mEditor.putString(AUTHORIZATION, authorization);
+                            mEditor.putBoolean(IS_LOGIN, true);
                             mEditor.commit();//提交修改
 
                             Toast.makeText(getActivity(), R.string.loginSuccess, Toast.LENGTH_SHORT).show();
