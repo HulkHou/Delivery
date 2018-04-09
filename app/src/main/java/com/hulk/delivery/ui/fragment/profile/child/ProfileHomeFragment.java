@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hulk.delivery.R;
-import com.hulk.delivery.ui.fragment.login.LoginFragment;
+import com.hulk.delivery.ui.fragment.login.LoginByPasswordFragment;
 import com.hulk.delivery.ui.fragment.profile.ProfileFragment;
 import com.hulk.delivery.util.LoginUtil;
 
@@ -57,7 +57,7 @@ public class ProfileHomeFragment extends SupportFragment {
         if (LoginUtil.checkLogin(_mActivity)) {
             start(SettingFragment.newInstance());
         } else {
-            start(LoginFragment.newInstance());
+            start(LoginByPasswordFragment.newInstance());
         }
     }
 

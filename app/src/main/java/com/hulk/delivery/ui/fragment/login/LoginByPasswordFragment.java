@@ -33,10 +33,10 @@ import io.reactivex.schedulers.Schedulers;
  * Created by hulk-out on 2017/9/8.
  */
 
-public class LoginFragment extends BaseMainFragment {
+public class LoginByPasswordFragment extends BaseMainFragment {
 
     private View view;
-    private static final String TAG = "LoginFragment";
+    private static final String TAG = "LoginByPasswordFragment";
     private boolean mbDisplayFlg = false;
     private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
@@ -64,15 +64,15 @@ public class LoginFragment extends BaseMainFragment {
     @BindView(R.id.iv_login_password_hide)
     ImageView mIvLoginPasswordHide;
 
-    public LoginFragment() {
+    public LoginByPasswordFragment() {
         // Required empty public constructor
         //初始化
         mPref = PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance());
     }
 
-    public static LoginFragment newInstance() {
+    public static LoginByPasswordFragment newInstance() {
         Bundle args = new Bundle();
-        LoginFragment fragment = new LoginFragment();
+        LoginByPasswordFragment fragment = new LoginByPasswordFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,7 +81,7 @@ public class LoginFragment extends BaseMainFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.login_frag, container, false);
+        view = inflater.inflate(R.layout.login_frag_password, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -168,5 +168,12 @@ public class LoginFragment extends BaseMainFragment {
                         alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
+    }
+
+    //跳转到验证码登录
+    @OnClick(R.id.btn_login_to_code)
+    public void loginToCode(View view) {
+        pop();
+        start(LoginByCodeFragment.newInstance());
     }
 }

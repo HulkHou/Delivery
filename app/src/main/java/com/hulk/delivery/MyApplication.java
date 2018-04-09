@@ -3,6 +3,7 @@ package com.hulk.delivery;
 import android.app.Application;
 
 import com.boma.boma365.MyEventBusIndex;
+import com.mob.MobSDK;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,6 +41,7 @@ public class MyApplication extends Application {
 
         app = this;
         EventBus.builder().addIndex(new MyEventBusIndex()).installDefaultEventBus();
+        MobSDK.init(this);
     }
 
     public static MyApplication getInstance() {

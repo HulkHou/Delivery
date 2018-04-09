@@ -1,0 +1,136 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 手机号 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/border_bg">
+
+        <TextView
+            android:id="@+id/tv_login_phone_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/et_login_phone"
+            android:layout_alignBottom="@+id/et_login_phone"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:text="手机号"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/textSize_title" />
+
+        <EditText
+            android:id="@+id/et_login_phone"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:layout_toEndOf="@+id/tv_login_phone_title"
+            android:hint="手机号"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/text_black_color"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+        <com.hulk.delivery.util.StateButton
+            android:id="@+id/btn_login_code_send"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:gravity="center"
+            android:minHeight="30dp"
+            android:text="发送验证码"
+            android:textColor="@color/text_black_color"
+            app:normalStrokeColor="@color/item_default_color"
+            app:normalStrokeWidth="1dp"
+            app:radius="4dp" />
+    </RelativeLayout>
+
+    <!-- 验证码 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_bg">
+
+        <TextView
+            android:id="@+id/tv_login_code_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:text="验证码"
+            android:textColor="@color/text_black_color"
+            android:textSize="@dimen/textSize_title" />
+
+        <EditText
+            android:id="@+id/et_login_code"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="52dp"
+            android:layout_toEndOf="@+id/tv_login_code_title"
+            android:hint="请输入验证码"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/text_black_color"
+            android:textColorHint="#95A1AA"
+            android:textSize="@dimen/textSize_small"
+            android:theme="@style/MyEditText" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="温馨提示：未注册账号的手机号，登录时将自动注册"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/textSize_small" />
+
+    <com.hulk.delivery.util.StateButton
+        android:id="@+id/btn_login_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:minWidth="40dp"
+        android:text="登录"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/textSize_title"
+        app:radius="4dp" />
+
+    <com.hulk.delivery.util.StateButton
+        android:id="@+id/btn_login_to_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:minWidth="40dp"
+        android:text="跳转到密码登录"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/textSize_title"
+        app:radius="4dp" />
+</LinearLayout>

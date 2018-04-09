@@ -36,7 +36,7 @@ import com.hulk.delivery.adapter.SubAdapter;
 import com.hulk.delivery.entity.GoogleAddressResponseResult;
 import com.hulk.delivery.entity.Results;
 import com.hulk.delivery.retrofit.Network;
-import com.hulk.delivery.ui.fragment.login.LoginFragment;
+import com.hulk.delivery.ui.fragment.login.LoginByPasswordFragment;
 import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.ScreenUtil;
 import com.schibstedspain.leku.LocationPickerActivity;
@@ -132,7 +132,7 @@ public class OrderHomeFragment extends SupportFragment {
                 message.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        start(LoginFragment.newInstance());
+                        start(LoginByPasswordFragment.newInstance());
                     }
                 });
             }
@@ -338,5 +338,12 @@ public class OrderHomeFragment extends SupportFragment {
         } else {
             return super.onBackPressedSupport();
         }
+    }
+
+    @Override
+    public void onSupportVisible() {
+        super.onSupportVisible();
+        //返回时隐藏软键盘
+        hideSoftInput();
     }
 }

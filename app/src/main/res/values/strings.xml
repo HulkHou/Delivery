@@ -18,12 +18,24 @@
     <string name="GOOGLE_ADDRESS_API_KEY">AIzaSyD4IInAKoeu6S8_BNG8lNR4FEuRh4ZaguQ</string>
 
     <string name="usernameIsnull">用户名为空！</string>
+    <string name="phoneIsnull">手机号为空！</string>
     <string name="passwordIsnull">密码为空！</string>
+    <string name="codeIsnull">验证码为空！</string>
+    <string name="codeIsError">验证码错误！</string>
+    <string name="codeSendSuccess">验证码发送成功！</string>
+    <string name="codeSendFailure">验证码发送失败！</string>
     <string name="loginSuccess">登录成功</string>
+    <string name="passwordSettingSuccess">密码设置成功</string>
     <string name="loginFailure">登录失败</string>
     <string name="networkError">网络问题</string>
     <string name="agree">知道了！</string>
     <string name="logoutSuccess">已登出！</string>
+    <string name="passwordIsAlphanumeric">密码必须由字母和数字8-14位组合！</string>
+    <string name="passwordOnlyIsAlphanumeric">密码必须由字母或数字4-14位组合！</string>
+    <string name="confirmPasswordIsNull">确认密码为空</string>
+    <string name="passwordIsDifferent">密码两次输入不一致！</string>
+    <string name="phoneIsUsed">该用户已经注册！</string>
+
 
 
 </resources>
