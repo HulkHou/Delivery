@@ -18,6 +18,8 @@ import com.hulk.delivery.entity.User;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.CountDownTimerUtils;
+import com.hulk.delivery.util.StateButton;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -62,6 +64,9 @@ public class LoginByCodeFragment extends BaseMainFragment {
     //验证码
     @BindView(R.id.et_login_code)
     EditText mEtCode;
+
+    @BindView(R.id.btn_login_code_send)
+    StateButton mCodeSend;
 
 
     public LoginByCodeFragment() {
@@ -110,7 +115,9 @@ public class LoginByCodeFragment extends BaseMainFragment {
             alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.phoneIsnull);
             return;
         }
-        sendCode("86", phone);
+        CountDownTimerUtils mCountDownTimerUtils = new CountDownTimerUtils(mCodeSend, 60000, 1000); //倒计时1分钟
+        mCountDownTimerUtils.start();
+//        sendCode("86", phone);
     }
 
     // 请求验证码，其中country表示国家代码，如“86”；phone表示手机号码，如“13800138000”
