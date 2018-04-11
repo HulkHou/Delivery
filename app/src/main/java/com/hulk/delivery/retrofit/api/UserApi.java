@@ -25,6 +25,21 @@ public interface UserApi {
     Observable<ResponseResult> doLogin(@Field("phone") String phone,
                                        @Field("password") String password);
 
+    //修改密码
+    @FormUrlEncoded
+    @POST("sys/user/changePwd")
+    Observable<ResponseResult> doChangePassword(@Header("Authorization") String authorization,
+                                                @Field("oldPwd") String oldPwd,
+                                                @Field("newPwd") String newPwd,
+                                                @Field("rePwd") String rePwd);
+
+    //重置密码
+    @FormUrlEncoded
+    @POST("sys/user/resetPwd")
+    Observable<ResponseResult> doResetPassword(@Header("Authorization") String authorization,
+                                                @Field("newPwd") String newPwd,
+                                                @Field("rePwd") String rePwd);
+
     //验证码登录
     @FormUrlEncoded
     @POST("sys/user/loginByCode")

@@ -145,10 +145,9 @@ public class LoginByPasswordFragment extends BaseMainFragment {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
                         String code = responseResult.getCode();
-                        String authorization = responseResult.getData().toString();
                         //status等于0时为登录成功
                         if ("200".equals(code)) {
-
+                            String authorization = responseResult.getData().toString();
                             //设置token
                             mEditor = mPref.edit();
                             mEditor.putString(AUTHORIZATION, authorization);

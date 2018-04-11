@@ -28,6 +28,7 @@
     <string name="passwordSettingSuccess">密码设置成功</string>
     <string name="loginFailure">登录失败</string>
     <string name="networkError">网络问题</string>
+    <string name="loginAgain">请重新登录</string>
     <string name="agree">知道了！</string>
     <string name="logoutSuccess">已登出！</string>
     <string name="passwordIsAlphanumeric">密码必须由字母和数字8-14位组合！</string>
@@ -36,6 +37,10 @@
     <string name="passwordIsDifferent">密码两次输入不一致！</string>
     <string name="phoneIsUsed">该用户已经注册！</string>
 
+    <string name="oldPasswordIsNull">原密码为空！</string>
+    <string name="oldPasswordFailure">原密码不正确！</string>
+    <string name="newPasswordIsNull">新密码为空！</string>
+    <string name="changeSuccess">密码设置成功！</string>
 
 
 </resources>
