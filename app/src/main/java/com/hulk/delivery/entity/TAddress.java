@@ -1,6 +1,11 @@
 package com.hulk.delivery.entity;
 
-public class TAddress {
+import java.io.Serializable;
+
+public class TAddress implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * 主键ID
      */
@@ -50,6 +55,17 @@ public class TAddress {
      * 备注
      */
     private String remark;
+
+
+    public TAddress(Integer id, String addressTag, String consignee, String phone, String street, String buildName, String unitNo) {
+        this.id = id;
+        this.addressTag = addressTag;
+        this.consignee = consignee;
+        this.phone = phone;
+        this.street = street;
+        this.buildName = buildName;
+        this.unitNo = unitNo;
+    }
 
     /**
      * 获取主键ID

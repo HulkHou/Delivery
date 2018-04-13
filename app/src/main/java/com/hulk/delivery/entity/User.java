@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * 主键id
      */
@@ -37,7 +40,7 @@ public class User implements Serializable {
     /**
      * 生日
      */
-    private Date birthday;
+    private String birthday;
 
     /**
      * 性别（1：男 2：女）
@@ -77,7 +80,7 @@ public class User implements Serializable {
     /**
      * 登录时间
      */
-    private Date logintime;
+    private String logintime;
 
     /**
      * 用户登录IP地址
@@ -87,7 +90,7 @@ public class User implements Serializable {
     /**
      * 创建时间
      */
-    private Date createtime;
+    private String createtime;
 
     /**
      * 创建人
@@ -97,7 +100,7 @@ public class User implements Serializable {
     /**
      * 更新时间
      */
-    private Date updatetime;
+    private String updatetime;
 
     /**
      * 更新人
@@ -231,7 +234,7 @@ public class User implements Serializable {
      *
      * @return birthday - 生日
      */
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
@@ -240,7 +243,7 @@ public class User implements Serializable {
      *
      * @param birthday 生日
      */
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -375,7 +378,7 @@ public class User implements Serializable {
      *
      * @return logintime - 登录时间
      */
-    public Date getLogintime() {
+    public String getLogintime() {
         return logintime;
     }
 
@@ -384,7 +387,7 @@ public class User implements Serializable {
      *
      * @param logintime 登录时间
      */
-    public void setLogintime(Date logintime) {
+    public void setLogintime(String logintime) {
         this.logintime = logintime;
     }
 
@@ -411,7 +414,7 @@ public class User implements Serializable {
      *
      * @return createtime - 创建时间
      */
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
@@ -420,7 +423,7 @@ public class User implements Serializable {
      *
      * @param createtime 创建时间
      */
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
@@ -447,7 +450,7 @@ public class User implements Serializable {
      *
      * @return updatetime - 更新时间
      */
-    public Date getUpdatetime() {
+    public String getUpdatetime() {
         return updatetime;
     }
 
@@ -456,7 +459,7 @@ public class User implements Serializable {
      *
      * @param updatetime 更新时间
      */
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
 

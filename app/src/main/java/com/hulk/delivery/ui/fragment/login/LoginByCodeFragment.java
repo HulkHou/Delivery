@@ -117,7 +117,7 @@ public class LoginByCodeFragment extends BaseMainFragment {
         }
         CountDownTimerUtils mCountDownTimerUtils = new CountDownTimerUtils(mCodeSend, 60000, 1000); //倒计时1分钟
         mCountDownTimerUtils.start();
-//        sendCode("86", phone);
+        sendCode("86", phone);
     }
 
     // 请求验证码，其中country表示国家代码，如“86”；phone表示手机号码，如“13800138000”
@@ -187,21 +187,20 @@ public class LoginByCodeFragment extends BaseMainFragment {
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     // TODO 处理验证成功的结果
-                    userInfoEvent = new Event.UserInfoEvent();
-                    userInfoEvent.user = new User(phone);
-                    EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
-
                     //检查是否存在该用户
                     Network.getUserApi().getUser(phone)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Consumer<ResponseResult>() {
+                            .subscribe(new Consumer<ResponseResult<User>>() {
                                 @Override
                                 public void accept(@NonNull ResponseResult responseResult) throws Exception {
                                     String code = responseResult.getCode();
                                     //code等于200时为查询成功
                                     //如果Data不为空，则有用户，直接进行登录，否则跳转到设置密码页面
                                     if ("200".equals(code) && responseResult.getData() != null) {
+                                        userInfoEvent = new Event.UserInfoEvent();
+                                        userInfoEvent.user = (User) responseResult.getData();
+                                        EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
                                         doLogin(phone);
                                     } else {
                                         start(LoginSettingPasswordFragment.newInstance());

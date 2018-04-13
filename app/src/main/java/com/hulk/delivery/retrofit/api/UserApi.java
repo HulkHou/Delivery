@@ -2,6 +2,7 @@ package com.hulk.delivery.retrofit.api;
 
 import com.hulk.delivery.entity.ResponseDataAddressList;
 import com.hulk.delivery.entity.ResponseResult;
+import com.hulk.delivery.entity.User;
 
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -11,6 +12,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -18,6 +20,15 @@ import retrofit2.http.Path;
  */
 
 public interface UserApi {
+
+    //注册
+    @POST("sys/user")
+    Observable<ResponseResult> doAdd(@Body RequestBody body);
+
+    //验证码登录
+    @FormUrlEncoded
+    @POST("sys/user/loginByCode")
+    Observable<ResponseResult> doLoginByCode(@Field("phone") String phone);
 
     //密码登录
     @FormUrlEncoded
@@ -37,21 +48,12 @@ public interface UserApi {
     @FormUrlEncoded
     @POST("sys/user/resetPwd")
     Observable<ResponseResult> doResetPassword(@Header("Authorization") String authorization,
-                                                @Field("newPwd") String newPwd,
-                                                @Field("rePwd") String rePwd);
-
-    //验证码登录
-    @FormUrlEncoded
-    @POST("sys/user/loginByCode")
-    Observable<ResponseResult> doLoginByCode(@Field("phone") String phone);
-
-    //注册
-    @POST("sys/user")
-    Observable<ResponseResult> doAdd(@Body RequestBody body);
+                                               @Field("newPwd") String newPwd,
+                                               @Field("rePwd") String rePwd);
 
     //查询User
     @GET("sys/user/{phone}")
-    Observable<ResponseResult> getUser(@Path("phone") String phone);
+    Observable<ResponseResult<User>> getUser(@Path("phone") String phone);
 
     //获取地址列表
     @GET("t/address")
@@ -60,5 +62,9 @@ public interface UserApi {
     //新增地址
     @POST("t/address")
     Observable<ResponseResult> doAddAddress(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //更新地址
+    @PUT("t/address")
+    Observable<ResponseResult> doUpdateAddress(@Header("Authorization") String authorization, @Body RequestBody body);
 
 }

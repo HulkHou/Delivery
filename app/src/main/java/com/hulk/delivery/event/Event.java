@@ -1,6 +1,7 @@
 package com.hulk.delivery.event;
 
 
+import com.hulk.delivery.entity.TAddress;
 import com.hulk.delivery.entity.User;
 
 /**
@@ -11,6 +12,10 @@ public class Event {
 
     public static class UserInfoEvent {
         public User user;
+    }
+
+    public static class AddressInfoEvent {
+        public TAddress tAddress;
     }
 
 }

@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.hulk.delivery.R;
 import com.hulk.delivery.entity.ResponseResult;
-import com.hulk.delivery.entity.User;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
 import com.schibstedspain.leku.LocationPickerActivity;
@@ -39,13 +38,13 @@ import okhttp3.RequestBody;
  * Created by hulk-out on 2017/9/8.
  */
 
-public class OrderAddAddressFragment extends SupportFragment {
+public class OrderUpdateAddressFragment extends SupportFragment {
 
     private View view;
-    private static final String TAG = "OrderAddAddressFragment";
+    private static final String TAG = "OrderUpdateAddressFragment";
     private String address;
 
-    private Integer userId;
+    private Integer id;
     private String addressTag;
     private Integer isDefault;
     private String consignee;
@@ -72,14 +71,14 @@ public class OrderAddAddressFragment extends SupportFragment {
     @BindView(R.id.tv_order_address_add_street)
     TextView streetView;
 
-    public OrderAddAddressFragment() {
+    public OrderUpdateAddressFragment() {
         // Required empty public constructor
     }
 
-    public static OrderAddAddressFragment newInstance() {
+    public static OrderUpdateAddressFragment newInstance() {
 
         Bundle args = new Bundle();
-        OrderAddAddressFragment fragment = new OrderAddAddressFragment();
+        OrderUpdateAddressFragment fragment = new OrderUpdateAddressFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,20 +90,36 @@ public class OrderAddAddressFragment extends SupportFragment {
         view = inflater.inflate(R.layout.order_frag_address_add, container, false);
         EventBusActivityScope.getDefault(_mActivity).register(this);
         ButterKnife.bind(this, view);
+        initViews();
         return view;
     }
 
     /**
-     * 选择UserInfo事件
+     * 选择Address事件
      *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onUserInfoEvent(Event.UserInfoEvent event) {
+    public void onAddressInfoEvent(Event.AddressInfoEvent event) {
         if (event != null) {
-            User user = event.user;
-            userId = user.getId();
+            id = event.tAddress.getId();
+            addressTag = event.tAddress.getAddressTag();
+            consignee = event.tAddress.getConsignee();
+            phone = event.tAddress.getPhone();
+            unitNo = event.tAddress.getUnitNo();
+            buildName = event.tAddress.getBuildName();
+            street = event.tAddress.getStreet();
         }
+    }
+
+    //初始化页面元素
+    private void initViews() {
+        tagView.setText(addressTag);
+        nameView.setText(consignee);
+        phoneView.setText(phone);
+        unitNoView.setText(unitNo);
+        buildNameView.setText(buildName);
+        streetView.setText(street);
     }
 
     //地点选取
@@ -169,9 +184,6 @@ public class OrderAddAddressFragment extends SupportFragment {
 
     @OnClick(R.id.btn_order_address_add_submit)
     public void addressAdd(View view) {
-
-        isDefault = 0;
-
         addressTag = tagView.getText().toString();
         consignee = nameView.getText().toString();
         phone = phoneView.getText().toString();
@@ -181,9 +193,8 @@ public class OrderAddAddressFragment extends SupportFragment {
 
         JSONObject result = new JSONObject();
         try {
-            result.put("userId", userId);
+            result.put("id", id);
             result.put("addressTag", addressTag);
-            result.put("isDefault", isDefault);
             result.put("consignee", consignee);
             result.put("phone", phone);
             result.put("street", street);
@@ -196,7 +207,7 @@ public class OrderAddAddressFragment extends SupportFragment {
         String authorization = Network.getAuthorization();
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), result.toString());
 
-        Network.getUserApi().doAddAddress(authorization, body)
+        Network.getUserApi().doUpdateAddress(authorization, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseResult>() {

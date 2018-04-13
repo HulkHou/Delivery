@@ -16,6 +16,8 @@ import com.hulk.delivery.MyApplication;
 import com.hulk.delivery.R;
 import com.hulk.delivery.base.BaseMainFragment;
 import com.hulk.delivery.entity.ResponseResult;
+import com.hulk.delivery.entity.User;
+import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
 
@@ -28,6 +30,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
 
 /**
  * Created by hulk-out on 2017/9/8.
@@ -45,6 +48,8 @@ public class LoginByPasswordFragment extends BaseMainFragment {
     private static final String IS_LOGIN = "IS_LOGIN";
     private final SharedPreferences mPref;
     private SharedPreferences.Editor mEditor;
+
+    private Event.UserInfoEvent userInfoEvent;
 
 
     //用户名
@@ -153,6 +158,28 @@ public class LoginByPasswordFragment extends BaseMainFragment {
                             mEditor.putString(AUTHORIZATION, authorization);
                             mEditor.putBoolean(IS_LOGIN, true);
                             mEditor.commit();//提交修改
+
+                            Network.getUserApi().getUser(username)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Consumer<ResponseResult<User>>() {
+                                        @Override
+                                        public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                                            String code = responseResult.getCode();
+                                            //code等于200时为查询成功
+                                            //如果Data不为空，则有用户，直接进行登录，否则跳转到设置密码页面
+                                            if ("200".equals(code)) {
+                                                userInfoEvent = new Event.UserInfoEvent();
+                                                userInfoEvent.user = (User) responseResult.getData();
+                                                EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
+                                            }
+                                        }
+                                    }, new Consumer<Throwable>() {
+                                        @Override
+                                        public void accept(@NonNull Throwable throwable) throws Exception {
+                                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                                        }
+                                    });
 
                             Toast.makeText(getActivity(), R.string.loginSuccess, Toast.LENGTH_SHORT).show();
                             //返回登录前操作页面
