@@ -2,7 +2,8 @@ package com.hulk.delivery.ui.fragment.login;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Looper;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,13 @@ import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
 import com.hulk.delivery.util.CountDownTimerUtils;
+import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.StateButton;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import org.apache.commons.lang3.StringUtils;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +46,7 @@ import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
 public class LoginByCodeFragment extends BaseMainFragment {
 
     private View view;
+    private final MyHandler mHandler = new MyHandler(this);
     private static final String TAG = "LoginByCodeFragment";
     private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
@@ -88,6 +94,20 @@ public class LoginByCodeFragment extends BaseMainFragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.login_frag_code, container, false);
         ButterKnife.bind(this, view);
+
+        EventHandler eh = new EventHandler() {
+            @Override
+            public void afterEvent(int event, int result, Object data) {
+                Message msg = new Message();
+                msg.arg1 = event;
+                msg.arg2 = result;
+                msg.obj = data;
+                mHandler.sendMessage(msg);
+            }
+
+        };
+        SMSSDK.registerEventHandler(eh);
+
         return view;
     }
 
@@ -117,43 +137,8 @@ public class LoginByCodeFragment extends BaseMainFragment {
         }
         CountDownTimerUtils mCountDownTimerUtils = new CountDownTimerUtils(mCodeSend, 60000, 1000); //倒计时1分钟
         mCountDownTimerUtils.start();
-        sendCode("86", phone);
-    }
-
-    // 请求验证码，其中country表示国家代码，如“86”；phone表示手机号码，如“13800138000”
-    public void sendCode(String country, String phone) {
-        // 注册一个事件回调，用于处理发送验证码操作的结果
-        SMSSDK.registerEventHandler(new EventHandler() {
-            public void afterEvent(int event, int result, Object data) {
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    // TODO 处理成功得到验证码的结果
-                    // 请注意，此时只是完成了发送验证码的请求，验证码短信还需要几秒钟之后才送达
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Looper.prepare();
-                            Toast.makeText(_mActivity, R.string.codeSendSuccess, Toast.LENGTH_SHORT).show();
-                            Looper.loop();
-                            Looper.myLooper().quit();
-                        }
-                    }).start();
-                } else {
-                    // TODO 处理错误的结果
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Looper.prepare();
-                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.codeSendFailure);
-                            Looper.loop();
-                            Looper.myLooper().quit();
-                        }
-                    }).start();
-                }
-
-            }
-        });
         // 触发操作
-        SMSSDK.getVerificationCode(country, phone);
+        SMSSDK.getVerificationCode("86", phone);
     }
 
     //登录提交
@@ -177,58 +162,8 @@ public class LoginByCodeFragment extends BaseMainFragment {
             return;
         }
 
-        submitCode("86", phone, code);
-    }
-
-    // 提交验证码，其中的code表示验证码，如“1357”
-    public void submitCode(String country, String phone, String code) {
-        // 注册一个事件回调，用于处理提交验证码操作的结果
-        SMSSDK.registerEventHandler(new EventHandler() {
-            public void afterEvent(int event, int result, Object data) {
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    // TODO 处理验证成功的结果
-                    //检查是否存在该用户
-                    Network.getUserApi().getUser(phone)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Consumer<ResponseResult<User>>() {
-                                @Override
-                                public void accept(@NonNull ResponseResult responseResult) throws Exception {
-                                    String code = responseResult.getCode();
-                                    //code等于200时为查询成功
-                                    //如果Data不为空，则有用户，直接进行登录，否则跳转到设置密码页面
-                                    if ("200".equals(code) && responseResult.getData() != null) {
-                                        userInfoEvent = new Event.UserInfoEvent();
-                                        userInfoEvent.user = (User) responseResult.getData();
-                                        EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
-                                        doLogin(phone);
-                                    } else {
-                                        start(LoginSettingPasswordFragment.newInstance());
-                                    }
-                                }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(@NonNull Throwable throwable) throws Exception {
-                                    alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
-                                }
-                            });
-                } else {
-                    // TODO 处理错误的结果
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Looper.prepare();
-                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.codeIsError);
-                            Looper.loop();
-                            Looper.myLooper().quit();
-                        }
-                    }).start();
-                }
-
-            }
-        });
         // 触发操作
-        SMSSDK.submitVerificationCode(country, phone, code);
+        SMSSDK.submitVerificationCode("86", phone, code);
     }
 
     //跳转到密码登录
@@ -245,11 +180,66 @@ public class LoginByCodeFragment extends BaseMainFragment {
         SMSSDK.unregisterAllEventHandler();
     }
 
+    //处理验证码发送以及验证之后的逻辑
+    private class MyHandler extends Handler {
+        private final WeakReference<LoginByCodeFragment> mFragment;
+
+        public MyHandler(LoginByCodeFragment loginByCodeFragment) {
+            mFragment = new WeakReference<LoginByCodeFragment>(loginByCodeFragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            LoginByCodeFragment fragment = mFragment.get();
+            if (fragment != null) {
+                int event = msg.arg1;
+                int result = msg.arg2;
+                Object data = msg.obj;
+
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                        Toast.makeText(MyApplication.getInstance(), R.string.codeSendSuccess, Toast.LENGTH_SHORT).show();
+                    } else if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        //检查是否存在该用户
+                        Network.getUserApi().getUser(phone)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .as(bindLifecycle())
+                                .subscribe(new Consumer<ResponseResult<User>>() {
+                                    @Override
+                                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                                        String code = responseResult.getCode();
+                                        //code等于200时为查询成功
+                                        //如果Data不为空，则有用户，直接进行登录，否则跳转到设置密码页面
+                                        if ("200".equals(code) && responseResult.getData() != null) {
+                                            userInfoEvent = new Event.UserInfoEvent();
+                                            userInfoEvent.user = (User) responseResult.getData();
+                                            EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
+                                            doLogin(phone);
+                                        } else {
+                                            start(LoginSettingPasswordFragment.newInstance());
+                                        }
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(@NonNull Throwable throwable) throws Exception {
+                                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                                    }
+                                });
+                    }
+                } else if (result == SMSSDK.RESULT_ERROR) {
+                    alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.codeIsError);
+                }
+            }
+        }
+    }
+
     //执行登录
     private void doLogin(String phone) {
         Network.getUserApi().doLoginByCode(phone)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -277,5 +267,9 @@ public class LoginByCodeFragment extends BaseMainFragment {
                         alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

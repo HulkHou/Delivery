@@ -20,6 +20,8 @@ import com.hulk.delivery.entity.User;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.RxLifecycleUtils;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -146,6 +148,7 @@ public class LoginByPasswordFragment extends BaseMainFragment {
         Network.getUserApi().doLogin(username, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -162,6 +165,7 @@ public class LoginByPasswordFragment extends BaseMainFragment {
                             Network.getUserApi().getUser(username)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
+                                    .as(bindLifecycle())
                                     .subscribe(new Consumer<ResponseResult<User>>() {
                                         @Override
                                         public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -201,5 +205,9 @@ public class LoginByPasswordFragment extends BaseMainFragment {
     public void loginToCode(View view) {
         pop();
         start(LoginByCodeFragment.newInstance());
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

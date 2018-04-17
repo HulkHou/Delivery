@@ -22,7 +22,9 @@ import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TAddress;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.ScreenUtil;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,6 +217,7 @@ public class OrderAddressFragment extends SupportFragment {
         Network.getUserApi().getAddressList(authorization)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult<ResponseDataAddressList>>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -241,5 +244,9 @@ public class OrderAddressFragment extends SupportFragment {
     public void onSupportVisible() {
         super.onSupportVisible();
         getAddressList();
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

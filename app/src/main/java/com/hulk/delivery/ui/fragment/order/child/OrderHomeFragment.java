@@ -38,8 +38,10 @@ import com.hulk.delivery.entity.Results;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.ui.fragment.login.LoginByPasswordFragment;
 import com.hulk.delivery.util.LoginUtil;
+import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.ScreenUtil;
 import com.schibstedspain.leku.LocationPickerActivity;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import java.util.List;
 
@@ -267,6 +269,7 @@ public class OrderHomeFragment extends SupportFragment {
         Network.getGoogleApi().getAddressByGoogle(latlng, googleAddressApiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<GoogleAddressResponseResult>() {
                     @Override
                     public void accept(@NonNull GoogleAddressResponseResult responseResult) throws Exception {
@@ -345,5 +348,9 @@ public class OrderHomeFragment extends SupportFragment {
         super.onSupportVisible();
         //返回时隐藏软键盘
         hideSoftInput();
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

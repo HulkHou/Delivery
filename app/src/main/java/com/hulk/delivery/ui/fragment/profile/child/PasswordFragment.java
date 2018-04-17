@@ -17,7 +17,9 @@ import com.hulk.delivery.R;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.StringUtilsCustomize;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -200,6 +202,7 @@ public class PasswordFragment extends SupportFragment {
         Network.getUserApi().doChangePassword(authorization, passwordOld, passwordNew, passwordConfirm)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -230,5 +233,9 @@ public class PasswordFragment extends SupportFragment {
     @OnClick(R.id.btn_profile_password_reset)
     public void passwordReset() {
         start(PasswordResetFragment.newInstance());
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

@@ -17,7 +17,9 @@ import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.User;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.util.RxLifecycleUtils;
 import com.schibstedspain.leku.LocationPickerActivity;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -199,6 +201,7 @@ public class OrderAddAddressFragment extends SupportFragment {
         Network.getUserApi().doAddAddress(authorization, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -220,5 +223,9 @@ public class OrderAddAddressFragment extends SupportFragment {
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

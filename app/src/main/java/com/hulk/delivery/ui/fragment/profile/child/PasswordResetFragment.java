@@ -20,8 +20,10 @@ import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
 import com.hulk.delivery.util.CountDownTimerUtils;
+import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.StateButton;
 import com.hulk.delivery.util.StringUtilsCustomize;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -292,6 +294,7 @@ public class PasswordResetFragment extends SupportFragment {
         Network.getUserApi().doResetPassword(authorization, passwordNew, passwordConfirm)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -324,5 +327,9 @@ public class PasswordResetFragment extends SupportFragment {
         super.onDestroy();
         //用完回调要注销掉，否则可能会出现内存泄露
         SMSSDK.unregisterAllEventHandler();
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

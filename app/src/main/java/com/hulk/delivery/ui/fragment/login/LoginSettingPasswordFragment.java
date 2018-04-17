@@ -18,7 +18,9 @@ import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.StringUtilsCustomize;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.greenrobot.eventbus.Subscribe;
@@ -172,6 +174,7 @@ public class LoginSettingPasswordFragment extends SupportFragment {
         Network.getUserApi().doAdd(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -198,6 +201,7 @@ public class LoginSettingPasswordFragment extends SupportFragment {
         Network.getUserApi().doLogin(phone, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
@@ -232,5 +236,9 @@ public class LoginSettingPasswordFragment extends SupportFragment {
     public void onDestroyView() {
         super.onDestroyView();
         EventBusActivityScope.getDefault(_mActivity).unregister(this);
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
     }
 }

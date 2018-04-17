@@ -12,14 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hulk.delivery.R;
-import com.hulk.delivery.adapter.ManagementAdapter;
-import com.hulk.delivery.entity.Videos;
+import com.hulk.delivery.adapter.OrderManagementViewBinder;
+import com.hulk.delivery.entity.TOrder;
 import com.hulk.delivery.ui.fragment.management.ManagementFragment;
 import com.hulk.delivery.util.RecycleViewDivider;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import me.drakeet.multitype.MultiTypeAdapter;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
@@ -33,7 +34,8 @@ public class ManagementHomeFragment extends SupportFragment {
 
     private Handler handler = new Handler();
 
-    private List<Videos> videosList = new ArrayList<>();
+    private MultiTypeAdapter adapter;
+    private List<TOrder> ordersList = new ArrayList<>();
 
     public static ManagementHomeFragment newInstance() {
 
@@ -63,8 +65,14 @@ public class ManagementHomeFragment extends SupportFragment {
         //设置item的分割线
         mRecyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.VERTICAL));
 //        mRecyclerView.addItemDecoration(new RecycleViewDivider(getActivity(), LinearLayoutManager.VERTICAL, R.drawable.divider_mileage));
-        ManagementAdapter adapter = new ManagementAdapter(initData());
 
+        adapter = new MultiTypeAdapter();
+
+        /* 注册类型和 View 的对应关系 */
+        adapter.register(TOrder.class, new OrderManagementViewBinder());
+        //设置Adapter
+        mRecyclerView.setAdapter(adapter);
+        adapter.setItems(initData());
 
         //下拉刷新
         mSwipeRefreshLayout = view.findViewById(R.id.SwipeRefreshLayout_management);
@@ -84,36 +92,33 @@ public class ManagementHomeFragment extends SupportFragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        videosList.clear();
+                        ordersList.clear();
                         initData();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 2000);
             }
         });
-
-        //设置Adapter
-        mRecyclerView.setAdapter(adapter);
     }
 
-    private List<Videos> initData() {
-        videosList.add(new Videos("1024"));
-        videosList.add(new Videos("1025"));
-        videosList.add(new Videos("1026"));
-        videosList.add(new Videos("1027"));
-        videosList.add(new Videos("1028"));
-        videosList.add(new Videos("1029"));
-        videosList.add(new Videos("1030"));
-        videosList.add(new Videos("1031"));
-        videosList.add(new Videos("1032"));
-        videosList.add(new Videos("1033"));
-        videosList.add(new Videos("1034"));
-        videosList.add(new Videos("1035"));
-        videosList.add(new Videos("1036"));
-        videosList.add(new Videos("1037"));
-        videosList.add(new Videos("1038"));
-        videosList.add(new Videos("1039"));
-        return videosList;
+    private List<TOrder> initData() {
+        ordersList.add(new TOrder("1024"));
+        ordersList.add(new TOrder("1025"));
+        ordersList.add(new TOrder("1026"));
+        ordersList.add(new TOrder("1027"));
+        ordersList.add(new TOrder("1028"));
+        ordersList.add(new TOrder("1029"));
+        ordersList.add(new TOrder("1030"));
+        ordersList.add(new TOrder("1031"));
+        ordersList.add(new TOrder("1032"));
+        ordersList.add(new TOrder("1033"));
+        ordersList.add(new TOrder("1034"));
+        ordersList.add(new TOrder("1035"));
+        ordersList.add(new TOrder("1036"));
+        ordersList.add(new TOrder("1037"));
+        ordersList.add(new TOrder("1038"));
+        ordersList.add(new TOrder("1039"));
+        return ordersList;
     }
 
     @Override
