@@ -1,7 +1,10 @@
 package com.hulk.delivery.retrofit.api;
 
-import com.hulk.delivery.entity.ResponseDataAddressList;
+import com.hulk.delivery.entity.ResponseDataObjectList;
 import com.hulk.delivery.entity.ResponseResult;
+import com.hulk.delivery.entity.TAddress;
+import com.hulk.delivery.entity.TMessage;
+import com.hulk.delivery.entity.TOrder;
 import com.hulk.delivery.entity.User;
 
 import io.reactivex.Observable;
@@ -57,7 +60,7 @@ public interface UserApi {
 
     //获取地址列表
     @GET("t/address")
-    Observable<ResponseResult<ResponseDataAddressList>> getAddressList(@Header("Authorization") String authorization);
+    Observable<ResponseResult<ResponseDataObjectList<TAddress>>> getAddressList(@Header("Authorization") String authorization);
 
     //新增地址
     @POST("t/address")
@@ -66,5 +69,13 @@ public interface UserApi {
     //更新地址
     @PUT("t/address")
     Observable<ResponseResult> doUpdateAddress(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //获取订单列表
+    @GET("t/order")
+    Observable<ResponseResult<ResponseDataObjectList<TOrder>>> getOrderList(@Header("Authorization") String authorization);
+
+    //获取消息列表
+    @GET("t/message")
+    Observable<ResponseResult<ResponseDataObjectList<TMessage>>> getMessageList(@Header("Authorization") String authorization);
 
 }

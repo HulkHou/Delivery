@@ -9,7 +9,7 @@ public class TAddress implements Serializable {
     /**
      * 主键ID
      */
-    private Integer id;
+    private Integer addressId;
 
     /**
      * 用户编号
@@ -57,8 +57,8 @@ public class TAddress implements Serializable {
     private String remark;
 
 
-    public TAddress(Integer id, String addressTag, String consignee, String phone, String street, String buildName, String unitNo) {
-        this.id = id;
+    public TAddress(Integer addressId, String addressTag, String consignee, String phone, String street, String buildName, String unitNo) {
+        this.addressId = addressId;
         this.addressTag = addressTag;
         this.consignee = consignee;
         this.phone = phone;
@@ -70,19 +70,19 @@ public class TAddress implements Serializable {
     /**
      * 获取主键ID
      *
-     * @return id - 主键ID
+     * @return addressId - 主键ID
      */
-    public Integer getId() {
-        return id;
+    public Integer getAddressId() {
+        return addressId;
     }
 
     /**
      * 设置主键ID
      *
-     * @param id 主键ID
+     * @param addressId 主键ID
      */
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(Integer addressId) {
+        this.addressId = addressId;
     }
 
     /**

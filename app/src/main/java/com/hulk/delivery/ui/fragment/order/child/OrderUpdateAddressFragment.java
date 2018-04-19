@@ -46,7 +46,7 @@ public class OrderUpdateAddressFragment extends SupportFragment {
     private static final String TAG = "OrderUpdateAddressFragment";
     private String address;
 
-    private Integer id;
+    private Integer addressId;
     private String addressTag;
     private Integer isDefault;
     private String consignee;
@@ -104,7 +104,7 @@ public class OrderUpdateAddressFragment extends SupportFragment {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onAddressInfoEvent(Event.AddressInfoEvent event) {
         if (event != null) {
-            id = event.tAddress.getId();
+            addressId = event.tAddress.getAddressId();
             addressTag = event.tAddress.getAddressTag();
             consignee = event.tAddress.getConsignee();
             phone = event.tAddress.getPhone();
@@ -195,7 +195,7 @@ public class OrderUpdateAddressFragment extends SupportFragment {
 
         JSONObject result = new JSONObject();
         try {
-            result.put("id", id);
+            result.put("addressId", addressId);
             result.put("addressTag", addressTag);
             result.put("consignee", consignee);
             result.put("phone", phone);

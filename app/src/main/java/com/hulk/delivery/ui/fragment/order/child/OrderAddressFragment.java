@@ -17,7 +17,7 @@ import com.hulk.delivery.R;
 import com.hulk.delivery.adapter.MainViewHolder;
 import com.hulk.delivery.adapter.SubAdapter;
 import com.hulk.delivery.adapter.TitleAdapter;
-import com.hulk.delivery.entity.ResponseDataAddressList;
+import com.hulk.delivery.entity.ResponseDataObjectList;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TAddress;
 import com.hulk.delivery.event.Event;
@@ -52,7 +52,7 @@ public class OrderAddressFragment extends SupportFragment {
     private RecyclerView recyclerView;
     private List<TAddress> addressList = new ArrayList<>();
 
-    private ResponseDataAddressList responseDataAddressList;
+    private ResponseDataObjectList<TAddress> responseDataAddressList;
 
     private Event.AddressInfoEvent addressInfoEvent;
 
@@ -154,7 +154,7 @@ public class OrderAddressFragment extends SupportFragment {
                 TextView mBuildName = holder.itemView.findViewById(R.id.build_name);
                 TextView mStreet = holder.itemView.findViewById(R.id.street);
 
-                Integer id = addressList.get(position).getId();
+                Integer id = addressList.get(position).getAddressId();
                 String addressTag = addressList.get(position).getAddressTag();
                 String consignee = addressList.get(position).getConsignee();
                 String phone = addressList.get(position).getPhone();
@@ -218,14 +218,14 @@ public class OrderAddressFragment extends SupportFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .as(bindLifecycle())
-                .subscribe(new Consumer<ResponseResult<ResponseDataAddressList>>() {
+                .subscribe(new Consumer<ResponseResult<ResponseDataObjectList<TAddress>>>() {
                     @Override
                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
                         String code = responseResult.getCode();
 
                         //status等于200时为查询成功
                         if ("200".equals(code)) {
-                            responseDataAddressList = (ResponseDataAddressList) responseResult.getData();
+                            responseDataAddressList = (ResponseDataObjectList<TAddress>) responseResult.getData();
                             addressList = responseDataAddressList.getList();
                             initView();
                         } else {

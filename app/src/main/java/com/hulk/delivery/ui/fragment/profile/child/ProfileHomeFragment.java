@@ -71,6 +71,16 @@ public class ProfileHomeFragment extends SupportFragment {
         }
     }
 
+    //消息管理
+    @OnClick(R.id.rl_profile_message_management)
+    public void message(View view) {
+        if (LoginUtil.checkLogin(_mActivity)) {
+            start(MessageFragment.newInstance());
+        } else {
+            start(LoginByPasswordFragment.newInstance());
+        }
+    }
+
     //当Fragment可见时调用此方法
     @Override
     public void onSupportVisible() {

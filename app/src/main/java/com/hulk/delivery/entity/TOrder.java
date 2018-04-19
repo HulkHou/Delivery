@@ -31,7 +31,7 @@ public class TOrder implements Serializable {
     /**
      * 订单状态。0，待店铺确认；1，店铺确认；2，外卖已送出；3，已送达；4，取消；5，完成；
      */
-    private Boolean orderStatus;
+    private String orderStatus;
 
     /**
      * 地址id，同t_address的id
@@ -66,24 +66,27 @@ public class TOrder implements Serializable {
     /**
      * 订单生成时间
      */
-    private Date createTime;
+    private String createTime;
 
     /**
      * 订单确认时间
      */
-    private Date confirmTime;
+    private String confirmTime;
 
     /**
      * 订单配送时间
      */
-    private Date shippingTime;
+    private String shippingTime;
+
+    private String shopName;
+
+    private String shopMobile;
+
+    private String consignee;
 
     public TOrder(String orderSn) {
         this.orderSn = orderSn;
     }
-
-
-
 
     /**
      * 获取订单信息表自增id
@@ -162,7 +165,7 @@ public class TOrder implements Serializable {
      *
      * @return order_status - 订单状态。0，待店铺确认；1，店铺确认；2，外卖已送出；3，已送达；4，取消；5，完成；
      */
-    public Boolean getOrderStatus() {
+    public String getOrderStatus() {
         return orderStatus;
     }
 
@@ -171,7 +174,7 @@ public class TOrder implements Serializable {
      *
      * @param orderStatus 订单状态。0，待店铺确认；1，店铺确认；2，外卖已送出；3，已送达；4，取消；5，完成；
      */
-    public void setOrderStatus(Boolean orderStatus) {
+    public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -288,7 +291,7 @@ public class TOrder implements Serializable {
      *
      * @return create_time - 订单生成时间
      */
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
@@ -297,7 +300,7 @@ public class TOrder implements Serializable {
      *
      * @param createTime 订单生成时间
      */
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -306,7 +309,7 @@ public class TOrder implements Serializable {
      *
      * @return confirm_time - 订单确认时间
      */
-    public Date getConfirmTime() {
+    public String getConfirmTime() {
         return confirmTime;
     }
 
@@ -315,7 +318,7 @@ public class TOrder implements Serializable {
      *
      * @param confirmTime 订单确认时间
      */
-    public void setConfirmTime(Date confirmTime) {
+    public void setConfirmTime(String confirmTime) {
         this.confirmTime = confirmTime;
     }
 
@@ -324,7 +327,7 @@ public class TOrder implements Serializable {
      *
      * @return shipping_time - 订单配送时间
      */
-    public Date getShippingTime() {
+    public String getShippingTime() {
         return shippingTime;
     }
 
@@ -333,7 +336,31 @@ public class TOrder implements Serializable {
      *
      * @param shippingTime 订单配送时间
      */
-    public void setShippingTime(Date shippingTime) {
+    public void setShippingTime(String shippingTime) {
         this.shippingTime = shippingTime;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getShopMobile() {
+        return shopMobile;
+    }
+
+    public void setShopMobile(String shopMobile) {
+        this.shopMobile = shopMobile;
+    }
+
+    public String getConsignee() {
+        return consignee;
+    }
+
+    public void setConsignee(String consignee) {
+        this.consignee = consignee;
     }
 }

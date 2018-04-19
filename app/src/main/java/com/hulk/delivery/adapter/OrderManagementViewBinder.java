@@ -28,12 +28,12 @@ public class OrderManagementViewBinder extends ItemViewBinder<TOrder, OrderManag
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull TOrder tOrder) {
         holder.orderSn.setText(tOrder.getOrderSn());
-        holder.shopName.setText(tOrder.getOrderSn());
-        holder.shopPhone.setText(tOrder.getOrderSn());
-        holder.shippingTime.setText(tOrder.getOrderSn());
-        holder.shippingAddress.setText(tOrder.getOrderSn());
-        holder.orderAmount.setText(tOrder.getOrderSn());
-        holder.orderStatus.setText(tOrder.getOrderSn());
+        holder.shopName.setText(tOrder.getShopName());
+        holder.shopPhone.setText(tOrder.getShopMobile());
+        holder.shippingTime.setText(tOrder.getShippingTime());
+        holder.shippingAddress.setText(tOrder.getConsignee());
+        holder.orderAmount.setText(tOrder.getOrderAmount().toString());
+        holder.orderStatus.setText(tOrder.getOrderStatus().toString());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

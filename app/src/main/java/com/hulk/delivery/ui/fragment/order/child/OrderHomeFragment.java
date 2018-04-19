@@ -37,6 +37,7 @@ import com.hulk.delivery.entity.GoogleAddressResponseResult;
 import com.hulk.delivery.entity.Results;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.ui.fragment.login.LoginByPasswordFragment;
+import com.hulk.delivery.ui.fragment.profile.child.MessageFragment;
 import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.ScreenUtil;
@@ -134,7 +135,11 @@ public class OrderHomeFragment extends SupportFragment {
                 message.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        start(LoginByPasswordFragment.newInstance());
+                        if (LoginUtil.checkLogin(_mActivity)) {
+                            start(MessageFragment.newInstance());
+                        } else {
+                            start(LoginByPasswordFragment.newInstance());
+                        }
                     }
                 });
             }

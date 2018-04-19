@@ -7,15 +7,15 @@ import java.util.List;
  * Created by hulk-out on 2017/11/28.
  */
 
-public class ResponseDataAddressList extends ResponseDataList implements Serializable {
+public class ResponseDataObjectList<T> extends ResponseDataList implements Serializable {
 
-    private List<TAddress> list;
+    private List<T> list;
 
-    public List<TAddress> getList() {
+    public List<T> getList() {
         return list;
     }
 
-    public void setList(List<TAddress> list) {
+    public void setList(List<T> list) {
         this.list = list;
     }
 }
