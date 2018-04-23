@@ -72,7 +72,7 @@ public class MessageFragment extends SupportFragment {
         adapter = new MultiTypeAdapter();
 
         /* 注册类型和 View 的对应关系 */
-        adapter.register(TMessage.class, new MessageViewBinder());
+        adapter.register(TMessage.class, new MessageViewBinder(messageList,this));
         //设置Adapter
         mRecyclerView.setAdapter(adapter);
         adapter.setItems(messageList);

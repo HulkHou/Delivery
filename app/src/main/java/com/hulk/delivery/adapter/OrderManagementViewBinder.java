@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.hulk.delivery.R;
 import com.hulk.delivery.entity.TOrder;
+import com.hulk.delivery.ui.fragment.management.child.ManagementHomeFragment;
+
+import java.util.List;
 
 import me.drakeet.multitype.ItemViewBinder;
 
@@ -18,6 +21,15 @@ import me.drakeet.multitype.ItemViewBinder;
  */
 
 public class OrderManagementViewBinder extends ItemViewBinder<TOrder, OrderManagementViewBinder.ViewHolder> {
+
+    List<TOrder> ordersList;
+    ManagementHomeFragment managementHomeFragment;
+
+    public OrderManagementViewBinder(List<TOrder> ordersList, ManagementHomeFragment managementHomeFragment) {
+        this.ordersList = ordersList;
+        this.managementHomeFragment = managementHomeFragment;
+    }
+
     @NonNull
     @Override
     protected ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {

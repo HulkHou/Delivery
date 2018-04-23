@@ -79,7 +79,7 @@ public class ManagementHomeFragment extends SupportFragment {
         adapter = new MultiTypeAdapter();
 
         /* 注册类型和 View 的对应关系 */
-        adapter.register(TOrder.class, new OrderManagementViewBinder());
+        adapter.register(TOrder.class, new OrderManagementViewBinder(ordersList, this));
         //设置Adapter
         mRecyclerView.setAdapter(adapter);
         adapter.setItems(ordersList);
