@@ -3,6 +3,7 @@ package com.hulk.delivery.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hulk.delivery.R;
@@ -12,13 +13,15 @@ import com.hulk.delivery.R;
  */
 
 public class BannerViewHolder extends RecyclerView.ViewHolder {
+    RelativeLayout mRelativeLayout;
     ImageView bannerImg;
     TextView bannerTitle;
 
     public BannerViewHolder(View itemView) {
         super(itemView);
-        bannerImg = itemView.findViewById(R.id.banner_img);
-        bannerTitle = itemView.findViewById(R.id.banner_title);
+        mRelativeLayout = itemView.findViewById(R.id.shop_banner);
+        bannerImg = itemView.findViewById(R.id.shop_banner_img);
+        bannerTitle = itemView.findViewById(R.id.shop_banner_title);
     }
 
 }

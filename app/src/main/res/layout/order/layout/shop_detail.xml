@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_bg">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:padding="5dp"
+            android:src="@drawable/index_list" />
+
+        <TextView
+            android:id="@+id/shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/image"
+            android:text="蓝波湾牛肉面馆"
+            android:textColor="@color/text_black_color"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/shop_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/shop_name"
+            android:layout_below="@+id/shop_name"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:text="口味："
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/shop_tag_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/shop_tag"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/shop_tag"
+            android:text="中式"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/shop_tag_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/shop_tag"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/shop_tag_1"
+            android:text="日式"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/shop_phone_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/shop_tag"
+            android:layout_below="@+id/shop_tag"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:text="电话："
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/shop_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/shop_phone_title"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/shop_phone_title"
+            android:text="+60172021234"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/delivery_free_fee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/shop_tag"
+            android:layout_below="@+id/shop_phone_title"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:text="满50免运费"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/shop_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/shop_tag"
+            android:layout_below="@+id/delivery_free_fee"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:text="我是一段shop描述，十佳餐厅是必须的！"
+            android:textSize="@dimen/textSize_small" />
+
+        <Button
+            android:id="@+id/expandButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/shop_tag"
+            android:layout_below="@+id/shop_desc"
+            android:text="店铺详情" />
+
+        <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+            android:id="@+id/expandableLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/expandButton"
+            app:ael_duration="0"
+            app:ael_expanded="false"
+            app:ael_interpolator="bounce"
+            app:ael_orientation="vertical">
+
+            <TextView
+                android:id="@+id/delivery_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/name"
+                android:layout_below="@+id/expandButton"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="10dp"
+                android:text="配送详情"
+                android:textSize="@dimen/textSize_title" />
+
+            <TextView
+                android:id="@+id/delivery_start_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/delivery_detail"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="10dp"
+                android:text="起送标准：RM20"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/delivery_start_fee"
+                android:layout_below="@+id/delivery_start_fee"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="10dp"
+                android:text="配送费：RM5"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/delivery_start_fee"
+                android:layout_below="@+id/delivery_fee"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="10dp"
+                android:text="配送时间:"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/delivery_time_title"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/delivery_time_title"
+                android:text="11:00 -- 12:00"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_least_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/delivery_start_fee"
+                android:layout_below="@+id/delivery_time_title"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="10dp"
+                android:text="最少配送时间:"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_least_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/delivery_least_time_title"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/delivery_least_time_title"
+                android:text="11:00 -- 12:00"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_areal_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/delivery_start_fee"
+                android:layout_below="@+id/delivery_least_time_title"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="10dp"
+                android:text="配送区域:"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_areal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/delivery_areal_title"
+                android:layout_marginLeft="10dp"
+                android:layout_toEndOf="@+id/delivery_areal_title"
+                android:text="KLCC  Bukit BinTang"
+                android:textSize="@dimen/textSize_small" />
+        </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rl_shop_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/expandableLayout"
+            android:background="@color/item_border_color"
+            android:clipToPadding="true"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:requiresFadingEdge="none"
+            android:scrollbars="none" />
+    </RelativeLayout>
+</FrameLayout>

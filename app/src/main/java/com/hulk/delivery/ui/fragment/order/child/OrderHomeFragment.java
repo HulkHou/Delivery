@@ -85,7 +85,9 @@ public class OrderHomeFragment extends SupportFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.order_frag_home, container, false);
         initView(view);
         //获取当前地址
@@ -217,7 +219,8 @@ public class OrderHomeFragment extends SupportFragment {
 
         if (ContextCompat.checkSelfPermission(_mActivity, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(_mActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                ContextCompat.checkSelfPermission(_mActivity,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -277,7 +280,8 @@ public class OrderHomeFragment extends SupportFragment {
                 .as(bindLifecycle())
                 .subscribe(new Consumer<GoogleAddressResponseResult>() {
                     @Override
-                    public void accept(@NonNull GoogleAddressResponseResult responseResult) throws Exception {
+                    public void accept(@NonNull GoogleAddressResponseResult responseResult)
+                            throws Exception {
                         String code = responseResult.getStatus();
                         List<Results> resultsArrayList = responseResult.getResults();
 

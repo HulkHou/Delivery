@@ -162,12 +162,12 @@ public class OrderAddressFragment extends SupportFragment {
                 String buildName = addressList.get(position).getBuildName();
                 String street = addressList.get(position).getStreet();
 
-                mTddressTag.setText(addressList.get(position).getAddressTag());
-                mConsignee.setText(addressList.get(position).getConsignee());
-                mPhone.setText(addressList.get(position).getPhone());
-                mUnitNo.setText(addressList.get(position).getUnitNo());
-                mBuildName.setText(addressList.get(position).getBuildName());
-                mStreet.setText(addressList.get(position).getStreet());
+                mTddressTag.setText(addressTag);
+                mConsignee.setText(consignee);
+                mPhone.setText(phone);
+                mUnitNo.setText(unitNo);
+                mBuildName.setText(buildName);
+                mStreet.setText(street);
 
                 addDetail.setOnClickListener(new View.OnClickListener() {
                     @Override

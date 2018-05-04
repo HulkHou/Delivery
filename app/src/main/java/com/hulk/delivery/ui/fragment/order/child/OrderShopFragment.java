@@ -4,15 +4,14 @@ package com.hulk.delivery.ui.fragment.order.child;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
@@ -24,14 +23,23 @@ import com.hulk.delivery.adapter.BannerAdapter;
 import com.hulk.delivery.adapter.MainViewHolder;
 import com.hulk.delivery.adapter.SubAdapter;
 import com.hulk.delivery.adapter.TitleAdapter;
-import com.hulk.delivery.event.TabSelectedEvent;
-
-import org.greenrobot.eventbus.Subscribe;
+import com.hulk.delivery.entity.ResponseDataObjectList;
+import com.hulk.delivery.entity.ResponseResult;
+import com.hulk.delivery.entity.TCollect;
+import com.hulk.delivery.entity.TShop;
+import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.LoginUtil;
+import com.hulk.delivery.util.RxLifecycleUtils;
+import com.uber.autodispose.AutoDisposeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.fragmentation.SupportFragment;
 
 /**
@@ -41,30 +49,38 @@ import me.yokeyword.fragmentation.SupportFragment;
 public class OrderShopFragment extends SupportFragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
-    private DrawerLayout mDrawerLayout;
-    private RecyclerView recyclerView;
-    private FrameLayout mDrawerContent;
-    private DelegateAdapter adapter;
+    static OrderShopFragment fragment;
+    private View view;
 
-    private SubAdapter adapter_search;
-    private SubAdapter adapter_address;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView recyclerView;
+    private DelegateAdapter adapter;
+    private BannerAdapter bAdapter;
     private SubAdapter adapter_collection_title;
     private SubAdapter adapter_collection;
     private SubAdapter adapter_shop_list_title;
     private SubAdapter adapter_shop_list;
     private SubAdapter adapter_footer;
 
-    private BannerAdapter bAdapter;
-
-    private List<String> list = new ArrayList<>();
     private boolean hasmore = true;
     private int page = 1;
     private Handler handler = new Handler();
 
+    private List<TShop> shopList = new ArrayList<>();
+    private List<TCollect> collectShopList = new ArrayList<>();
+    private ResponseDataObjectList<TShop> responseDataShopList;
+    private ResponseDataObjectList<TCollect> responseDataCollectShopList;
+
+    private Boolean isLogin = false;
+
+    private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
+
+
+
     public static OrderShopFragment newInstance() {
 
         Bundle args = new Bundle();
-        OrderShopFragment fragment = new OrderShopFragment();
+        fragment = new OrderShopFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,23 +90,22 @@ public class OrderShopFragment extends SupportFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.order_frag_shop, container, false);
-        EventBusActivityScope.getDefault(_mActivity).register(this);
-        initView(view);
+        view = inflater.inflate(R.layout.order_frag_shop, container, false);
+        if (isLogin) {
+            getCollectShopList(view);
+        }
+        getShopList(view);
         return view;
     }
 
     private void initView(View view) {
-        mDrawerLayout = view.findViewById(R.id.main_layout);
         recyclerView = view.findViewById(R.id.main_view);
-        mDrawerContent = view.findViewById(R.id.drawer_filter_content);
         VirtualLayoutManager manager = new VirtualLayoutManager(_mActivity);
         recyclerView.setLayoutManager(manager);
         adapter = new DelegateAdapter(manager, false);
 
         //设置RecyclerView滚动监听
         RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             }
 
@@ -106,9 +121,7 @@ public class OrderShopFragment extends SupportFragment
                             @Override
                             public void run() {
                                 if (page < 2) {
-                                    for (int i = 0; i < 10; i++) {
-                                        list.add("123");
-                                    }
+                                    getShopList(view);
                                     adapter_shop_list.notifyDataSetChanged();
                                     page++;
                                     hasmore = true;
@@ -125,65 +138,68 @@ public class OrderShopFragment extends SupportFragment
         };
         recyclerView.addOnScrollListener(onScrollListener);
 
-        //我的收藏标题
-        adapter_collection_title = new TitleAdapter(_mActivity, getTitleHelper()) {
-            @Override
-            public void onBindViewHolder(MainViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-            }
+        //未登录不显示收藏列表
+        if (isLogin) {
+            //我的收藏标题
+            adapter_collection_title = new TitleAdapter(_mActivity, getTitleHelper()) {
+                @Override
+                public void onBindViewHolder(MainViewHolder holder, int position) {
+                    super.onBindViewHolder(holder, position);
+                }
 
-            //设置标题名称
-            @Override
-            protected String getText() {
-                return getString(R.string.collection);
-            }
+                //设置标题名称
+                @Override
+                protected String getText() {
+                    return getString(R.string.shop_collection);
+                }
 
-            //设置标题左右图标
-            @Override
-            protected int[] getDrawables() {
-                return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
-            }
+                //设置标题左右图标
+                @Override
+                protected int[] getDrawables() {
+                    return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
+                }
 
-        };
-        adapter.addAdapter(adapter_collection_title);
+            };
+            adapter.addAdapter(adapter_collection_title);
 
-        //我的收藏
-        SingleLayoutHelper layoutHelper = new SingleLayoutHelper();
-        adapter_collection = new SubAdapter(_mActivity, layoutHelper, 1) {
-            @Override
-            public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new MainViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_collection, parent, false));
-            }
+            //我的收藏
+            SingleLayoutHelper layoutHelper = new SingleLayoutHelper();
+            adapter_collection = new SubAdapter(_mActivity, layoutHelper, 1) {
+                @Override
+                public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                    return new MainViewHolder(LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_collection, parent, false));
+                }
 
-            @Override
-            public void onBindViewHolder(MainViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-                RecyclerView recyclerView = holder.itemView.findViewById(R.id.banner);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_mActivity);
-                linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-                recyclerView.setLayoutManager(linearLayoutManager);
+                @Override
+                public void onBindViewHolder(MainViewHolder holder, int position) {
+                    super.onBindViewHolder(holder, position);
+                    RecyclerView recyclerView = holder.itemView.findViewById(R.id.banner);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_mActivity);
+                    linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                    recyclerView.setLayoutManager(linearLayoutManager);
 
-                bAdapter = new BannerAdapter(_mActivity);
-                recyclerView.setAdapter(bAdapter);
+                    bAdapter = new BannerAdapter(_mActivity, fragment, collectShopList);
+                    recyclerView.setAdapter(bAdapter);
 
-                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                    }
+                    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                            super.onScrollStateChanged(recyclerView, newState);
+                        }
 
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                    }
-                });
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            super.onScrolled(recyclerView, dx, dy);
+                        }
+                    });
 
-            }
-        };
-        adapter.addAdapter(adapter_collection);
+                }
+            };
+            adapter.addAdapter(adapter_collection);
+        }
 
-        //结果列表标题
+        //商家列表标题
         adapter_shop_list_title = new TitleAdapter(_mActivity, getTitleHelper()) {
             @Override
             public void onBindViewHolder(MainViewHolder holder, int position) {
@@ -205,16 +221,9 @@ public class OrderShopFragment extends SupportFragment
         };
         adapter.addAdapter(adapter_shop_list_title);
 
-        //结果列表
-        for (int i = 0; i < 10; i++) {
-            list.add("abc");
-        }
+        //商家列表
         LinearLayoutHelper linearLayoutHelper = new LinearLayoutHelper();
-        adapter_shop_list = new SubAdapter(_mActivity, linearLayoutHelper, list.size()) {
-            @Override
-            public void onBindViewHolder(MainViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-            }
+        adapter_shop_list = new SubAdapter(_mActivity, linearLayoutHelper, shopList.size()) {
 
             @Override
             public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -224,11 +233,71 @@ public class OrderShopFragment extends SupportFragment
             }
 
             @Override
+            public void onBindViewHolder(MainViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                RelativeLayout mShopDetail = holder.itemView.findViewById(R.id.rl_shop_detail);
+                TextView mShopName = holder.itemView.findViewById(R.id.shop_name);
+                TextView mShippingStartFee = holder.itemView.findViewById(R.id.shipping_start_fee);
+                TextView mShippingFee = holder.itemView.findViewById(R.id.shipping_fee);
+                TextView mShippingFreeFee = holder.itemView.findViewById(R.id.shipping_free_fee);
+                TextView mShopDesc = holder.itemView.findViewById(R.id.shop_desc);
+
+                String shopName = shopList.get(position).getShopName();
+                String shippingStartFee = shopList.get(position).getShippingStartFee().toString();
+                String shippingFee = shopList.get(position).getShippingFee().toString();
+                String shippingFreeFee = shopList.get(position).getShippingFreeFee().toString();
+                String shopDesc = shopList.get(position).getShopDesc();
+
+                mShopName.setText(shopName);
+                mShippingStartFee.setText(shippingStartFee);
+                mShippingFee.setText(shippingFee);
+                mShippingFreeFee.setText(shippingFreeFee);
+                mShopDesc.setText(shopDesc);
+
+                mShopDetail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ((SupportFragment) getParentFragment()).start(ShopDetailFragment.newInstance());
+                    }
+                });
+            }
+
+            @Override
             public int getItemCount() {
-                return list.size();
+                return shopList.size();
             }
         };
         adapter.addAdapter(adapter_shop_list);
+
+        //下拉刷新
+        mSwipeRefreshLayout = view.findViewById(R.id.SwipeRefreshLayout_shop);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.text_blue_color);
+
+//        mSwipeRefreshLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+////                mSwipeRefreshLayout.setRefreshing(true);
+////                mSwipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isLogin) {
+                            collectShopList.clear();
+                            getCollectShopList(view);
+                        }
+                        shopList.clear();
+                        getShopList(view);
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
 
         //加载更多布局
         SingleLayoutHelper moreLayoutHelper = new SingleLayoutHelper();
@@ -265,24 +334,90 @@ public class OrderShopFragment extends SupportFragment
 
     }
 
-    /**
-     * 选择tab事件
-     */
-    @Subscribe
-    public void onTabSelectedEvent(TabSelectedEvent event) {
-
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        EventBusActivityScope.getDefault(_mActivity).unregister(this);
+    }
+
+    @Override
+    public void onSupportVisible() {
+        super.onSupportVisible();
+        isLogin = LoginUtil.checkLogin(_mActivity);
+        if (isLogin) {
+            collectShopList.clear();
+            getCollectShopList(view);
+        }
+        shopList.clear();
+        getShopList(view);
     }
 
     private SingleLayoutHelper getTitleHelper() {
         SingleLayoutHelper helper = new SingleLayoutHelper();
         helper.setMarginTop(20);
         return helper;
+    }
+
+    protected <T> AutoDisposeConverter<T> bindLifecycle() {
+        return RxLifecycleUtils.bindLifecycle(this);
+    }
+
+    //获取collectShopList
+    private void getCollectShopList(View view) {
+        //获取token
+        String authorization = Network.getAuthorization();
+        Network.getUserApi().getCollectShopList(authorization)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult<ResponseDataObjectList<TCollect>>>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            responseDataCollectShopList = (ResponseDataObjectList<TCollect>) responseResult.getData();
+                            collectShopList = responseDataCollectShopList.getList();
+                            initView(view);
+                        } else {
+                            _mActivity.onBackPressed();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
+    }
+
+    //获取shopList
+    private void getShopList(View view) {
+        Network.getUserApi().getShopList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult<ResponseDataObjectList<TShop>>>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            responseDataShopList = (ResponseDataObjectList<TShop>) responseResult.getData();
+                            shopList = responseDataShopList.getList();
+                            initView(view);
+                        } else {
+                            _mActivity.onBackPressed();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
     }
 
 }

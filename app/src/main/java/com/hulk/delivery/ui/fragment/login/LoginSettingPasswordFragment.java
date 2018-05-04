@@ -29,9 +29,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
 import me.yokeyword.fragmentation.SupportFragment;
@@ -171,36 +173,29 @@ public class LoginSettingPasswordFragment extends SupportFragment {
 
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), result.toString());
 
+        //发起注册请求
         Network.getUserApi().doAdd(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(bindLifecycle())
-                .subscribe(new Consumer<ResponseResult>() {
+                .subscribeOn(Schedulers.io())                   //在IO线程进行网络请求
+                .observeOn(AndroidSchedulers.mainThread())      //回到主线程去处理请求注册结果
+                .doOnNext(new Consumer<ResponseResult>() {
                     @Override
-                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                    public void accept(ResponseResult responseResult) throws Exception {
                         String code = responseResult.getCode();
-                        //status等于0时为查询成功
-                        if ("200".equals(code)) {
-                            doLogin(phone, loginNewPassword);
-                        }
-                        if ("400".equals(code)) {
-                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.phoneIsUsed);
-                        } else {
-
-                        }
+                        //status等于200时为登录成功,直接进行登录操作
+//                        if ("400".equals(code)) {               //该用户已经注册
+//                            throw new Exception(String.valueOf(R.string.phoneIsUsed));
+//                        }
                     }
-                }, new Consumer<Throwable>() {
+                })
+                .observeOn(Schedulers.io())         //回到IO线程去发起登录操作
+                .flatMap(new Function<ResponseResult, ObservableSource<ResponseResult>>() {
                     @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    public ObservableSource<ResponseResult> apply(ResponseResult responseResult)
+                            throws Exception {
+                        return Network.getUserApi().doLogin(phone, loginNewPassword);
                     }
-                });
-    }
-
-    private void doLogin(String phone, String password) {
-        Network.getUserApi().doLogin(phone, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                })
+                .observeOn(AndroidSchedulers.mainThread())          //回到主线程去处理获取用户信息结果
                 .as(bindLifecycle())
                 .subscribe(new Consumer<ResponseResult>() {
                     @Override
@@ -209,7 +204,6 @@ public class LoginSettingPasswordFragment extends SupportFragment {
                         String authorization = responseResult.getData().toString();
                         //status等于0时为登录成功
                         if ("200".equals(code)) {
-
                             //设置token
                             mEditor = mPref.edit();
                             mEditor.putString(AUTHORIZATION, authorization);

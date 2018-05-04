@@ -33,9 +33,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
 
@@ -201,11 +203,10 @@ public class LoginByCodeFragment extends BaseMainFragment {
                         Toast.makeText(MyApplication.getInstance(), R.string.codeSendSuccess, Toast.LENGTH_SHORT).show();
                     } else if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
                         //检查是否存在该用户
-                        Network.getUserApi().getUser(phone)
-                                .subscribeOn(Schedulers.io())
+                        Network.getUserApi().getUser(phone)             //获取用户信息
+                                .subscribeOn(Schedulers.io())           //在IO线程进行网络请求
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .as(bindLifecycle())
-                                .subscribe(new Consumer<ResponseResult<User>>() {
+                                .doOnNext(new Consumer<ResponseResult<User>>() {
                                     @Override
                                     public void accept(@NonNull ResponseResult responseResult) throws Exception {
                                         String code = responseResult.getCode();
@@ -215,15 +216,58 @@ public class LoginByCodeFragment extends BaseMainFragment {
                                             userInfoEvent = new Event.UserInfoEvent();
                                             userInfoEvent.user = (User) responseResult.getData();
                                             EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
-                                            doLogin(phone);
                                         } else {
+                                            userInfoEvent = new Event.UserInfoEvent();
+                                            userInfoEvent.user = new User(phone);
+                                            EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
                                             start(LoginSettingPasswordFragment.newInstance());
+                                            throw new Exception(String.valueOf(R.string.phoneIsUnUsed));
+                                        }
+                                    }
+                                })
+                                .observeOn(Schedulers.io())         //回到IO线程去发起登录操作
+                                .flatMap(new Function<ResponseResult<User>, ObservableSource<ResponseResult>>() {
+                                    @Override
+                                    public ObservableSource<ResponseResult> apply(ResponseResult<User> responseResult)
+                                            throws Exception {
+                                        return Network.getUserApi().doLoginByCode(phone);
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())          //回到主线程去处理登录结果
+                                .as(bindLifecycle())
+                                .subscribe(new Consumer<ResponseResult>() {
+                                    @Override
+                                    public void accept(@NonNull ResponseResult responseResult)
+                                            throws Exception {
+                                        String code = responseResult.getCode();
+                                        String authorization = responseResult.getData().toString();
+                                        //status等于0时为登录成功
+                                        if ("200".equals(code)) {
+                                            //设置token
+                                            mEditor = mPref.edit();
+                                            mEditor.putString(AUTHORIZATION, authorization);
+                                            mEditor.putBoolean(IS_LOGIN, true);
+                                            mEditor.commit();//提交修改
+
+                                            Toast.makeText(getActivity(), R.string.loginSuccess,
+                                                    Toast.LENGTH_SHORT).show();
+                                            //返回登录前操作页面
+                                            pop();
+                                            _mActivity.onBackPressed();
+                                        } else {
+                                            alertDialogUtils.showBasicDialogNoTitle(_mActivity,
+                                                    R.string.loginFailure);
                                         }
                                     }
                                 }, new Consumer<Throwable>() {
                                     @Override
-                                    public void accept(@NonNull Throwable throwable) throws Exception {
-                                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                                    public void accept(@NonNull Throwable throwable)
+                                            throws Exception {
+                                        if (!throwable.getMessage()
+                                                .equals(String.valueOf(R.string.phoneIsUnUsed))) {
+                                            alertDialogUtils.showBasicDialogNoTitle(_mActivity,
+                                                    R.string.networkError);
+                                        }
                                     }
                                 });
                     }
@@ -232,41 +276,6 @@ public class LoginByCodeFragment extends BaseMainFragment {
                 }
             }
         }
-    }
-
-    //执行登录
-    private void doLogin(String phone) {
-        Network.getUserApi().doLoginByCode(phone)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(bindLifecycle())
-                .subscribe(new Consumer<ResponseResult>() {
-                    @Override
-                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
-                        String code = responseResult.getCode();
-                        String authorization = responseResult.getData().toString();
-                        //status等于0时为登录成功
-                        if ("200".equals(code)) {
-
-                            //设置token
-                            mEditor = mPref.edit();
-                            mEditor.putString(AUTHORIZATION, authorization);
-                            mEditor.putBoolean(IS_LOGIN, true);
-                            mEditor.commit();//提交修改
-
-                            Toast.makeText(getActivity(), R.string.loginSuccess, Toast.LENGTH_SHORT).show();
-                            //返回登录前操作页面
-                            _mActivity.onBackPressed();
-                        } else {
-                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.loginFailure);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
-                    }
-                });
     }
 
     protected <T> AutoDisposeConverter<T> bindLifecycle() {

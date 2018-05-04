@@ -3,8 +3,10 @@
 
     <string name="home">Home</string>
 
-    <string name="collection">我的收藏</string>
+    <string name="shop_collection">我的店铺收藏</string>
+    <string name="food_collection">我的美食收藏</string>
     <string name="shop_list_title">我的商店列表</string>
+    <string name="food_list_title">菜品列表</string>
     <string name="address_list_title">我的地址列表</string>
 
     <string name="addressDesc">定位中...</string>
@@ -26,7 +28,7 @@
     <string name="codeSendFailure">验证码发送失败！</string>
     <string name="loginSuccess">登录成功</string>
     <string name="passwordSettingSuccess">密码设置成功</string>
-    <string name="loginFailure">登录失败</string>
+    <string name="loginFailure">用户名或密码错误，登录失败</string>
     <string name="networkError">网络问题</string>
     <string name="loginAgain">请重新登录</string>
     <string name="agree">知道了！</string>
@@ -36,6 +38,7 @@
     <string name="confirmPasswordIsNull">确认密码为空</string>
     <string name="passwordIsDifferent">密码两次输入不一致！</string>
     <string name="phoneIsUsed">该用户已经注册！</string>
+    <string name="phoneIsUnUsed">该用户未注册！</string>
 
     <string name="oldPasswordIsNull">原密码为空！</string>
     <string name="oldPasswordFailure">原密码不正确！</string>

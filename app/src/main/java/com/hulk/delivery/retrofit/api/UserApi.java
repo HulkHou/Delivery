@@ -3,8 +3,10 @@ package com.hulk.delivery.retrofit.api;
 import com.hulk.delivery.entity.ResponseDataObjectList;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TAddress;
+import com.hulk.delivery.entity.TCollect;
 import com.hulk.delivery.entity.TMessage;
 import com.hulk.delivery.entity.TOrder;
+import com.hulk.delivery.entity.TShop;
 import com.hulk.delivery.entity.User;
 
 import io.reactivex.Observable;
@@ -77,5 +79,13 @@ public interface UserApi {
     //获取消息列表
     @GET("t/message")
     Observable<ResponseResult<ResponseDataObjectList<TMessage>>> getMessageList(@Header("Authorization") String authorization);
+
+    //获取商家列表
+    @GET("t/shop")
+    Observable<ResponseResult<ResponseDataObjectList<TShop>>> getShopList();
+
+    //获取collect商家列表
+    @GET("t/collect")
+    Observable<ResponseResult<ResponseDataObjectList<TCollect>>> getCollectShopList(@Header("Authorization") String authorization);
 
 }

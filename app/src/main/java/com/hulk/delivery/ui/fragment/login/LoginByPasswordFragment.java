@@ -28,9 +28,11 @@ import org.apache.commons.lang3.StringUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
 
@@ -145,15 +147,14 @@ public class LoginByPasswordFragment extends BaseMainFragment {
         }
 
         //请求登录
-        Network.getUserApi().doLogin(username, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(bindLifecycle())
-                .subscribe(new Consumer<ResponseResult>() {
+        Network.getUserApi().doLogin(username, password)        //发起登录请求
+                .subscribeOn(Schedulers.io())                   //在IO线程进行网络请求
+                .observeOn(AndroidSchedulers.mainThread())      //回到主线程去处理请求登录结果
+                .doOnNext(new Consumer<ResponseResult>() {
                     @Override
-                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                    public void accept(ResponseResult responseResult) throws Exception {
                         String code = responseResult.getCode();
-                        //status等于0时为登录成功
+                        //status等于200时为登录成功
                         if ("200".equals(code)) {
                             String authorization = responseResult.getData().toString();
                             //设置token
@@ -161,41 +162,45 @@ public class LoginByPasswordFragment extends BaseMainFragment {
                             mEditor.putString(AUTHORIZATION, authorization);
                             mEditor.putBoolean(IS_LOGIN, true);
                             mEditor.commit();//提交修改
-
-                            Network.getUserApi().getUser(username)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .as(bindLifecycle())
-                                    .subscribe(new Consumer<ResponseResult<User>>() {
-                                        @Override
-                                        public void accept(@NonNull ResponseResult responseResult) throws Exception {
-                                            String code = responseResult.getCode();
-                                            //code等于200时为查询成功
-                                            //如果Data不为空，则有用户，直接进行登录，否则跳转到设置密码页面
-                                            if ("200".equals(code)) {
-                                                userInfoEvent = new Event.UserInfoEvent();
-                                                userInfoEvent.user = (User) responseResult.getData();
-                                                EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
-                                            }
-                                        }
-                                    }, new Consumer<Throwable>() {
-                                        @Override
-                                        public void accept(@NonNull Throwable throwable) throws Exception {
-                                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
-                                        }
-                                    });
-
                             Toast.makeText(getActivity(), R.string.loginSuccess, Toast.LENGTH_SHORT).show();
+                        } else if ("400".equals(code)) {        //用户名或者密码错误
+                            throw new Exception(String.valueOf(R.string.loginFailure));
+                        } else {                                //其他错误
+                            throw new Exception();
+                        }
+                    }
+                })
+                .observeOn(Schedulers.io())         //回到IO线程去发起获取用户信息
+                .flatMap(new Function<ResponseResult, ObservableSource<ResponseResult<User>>>() {
+                    @Override
+                    public ObservableSource<ResponseResult<User>> apply(ResponseResult responseResult)
+                            throws Exception {
+                        return Network.getUserApi().getUser(username);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())          //回到主线程去处理获取用户信息结果
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult<User>>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+                        //code等于200时为查询成功
+                        if ("200".equals(code)) {
+                            userInfoEvent = new Event.UserInfoEvent();
+                            userInfoEvent.user = (User) responseResult.getData();
+                            EventBusActivityScope.getDefault(_mActivity).postSticky(userInfoEvent);
                             //返回登录前操作页面
                             _mActivity.onBackPressed();
-                        } else {
-                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.loginFailure);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                        if (throwable.getMessage().equals(String.valueOf(R.string.loginFailure))) {
+                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.loginFailure);
+                        } else {
+                            alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                        }
                     }
                 });
     }
