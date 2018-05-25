@@ -17,6 +17,7 @@ import com.hulk.delivery.R;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.StringUtilsCustomize;
 import com.uber.autodispose.AutoDisposeConverter;
@@ -197,7 +198,7 @@ public class PasswordFragment extends SupportFragment {
         }
 
         //获取token
-        String authorization = Network.getAuthorization();
+        String authorization = LoginUtil.getAuthorization();
 
         Network.getUserApi().doChangePassword(authorization, passwordOld, passwordNew, passwordConfirm)
                 .subscribeOn(Schedulers.io())

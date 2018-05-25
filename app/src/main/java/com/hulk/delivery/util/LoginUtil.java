@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.hulk.delivery.MyApplication;
 import com.hulk.delivery.retrofit.Network;
 
 import static java.lang.Boolean.FALSE;
@@ -16,6 +17,10 @@ public class LoginUtil {
 
 
     private static final String IS_LOGIN = "IS_LOGIN";
+    private static final String AUTHORIZATION = "AUTHORIZATION";
+    private static MyApplication app = MyApplication.getInstance();
+    ;
+    private static String authorization;
 
     public static boolean checkLogin(Context context) {
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -41,5 +46,12 @@ public class LoginUtil {
 
         mEditor.putBoolean(IS_LOGIN, false);
         mEditor.commit();//提交修改
+    }
+
+    //获取头信息用token
+    public static String getAuthorization() {
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(app);
+        authorization = mPref.getString(AUTHORIZATION, "");
+        return authorization;
     }
 }

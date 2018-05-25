@@ -4,6 +4,7 @@
     <string name="home">Home</string>
 
     <string name="shop_collection">我的店铺收藏</string>
+    <string name="shop_detail">店铺信息</string>
     <string name="food_collection">我的美食收藏</string>
     <string name="shop_list_title">我的商店列表</string>
     <string name="food_list_title">菜品列表</string>
@@ -44,6 +45,10 @@
     <string name="oldPasswordFailure">原密码不正确！</string>
     <string name="newPasswordIsNull">新密码为空！</string>
     <string name="changeSuccess">密码设置成功！</string>
+
+    <string name="deleteSuccess">删除成功！</string>
+
+    <string name="success">成功！</string>
 
 
 </resources>

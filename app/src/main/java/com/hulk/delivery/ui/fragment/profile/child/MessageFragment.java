@@ -15,6 +15,8 @@ import com.hulk.delivery.entity.ResponseDataObjectList;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TMessage;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RecycleViewDivider;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.uber.autodispose.AutoDisposeConverter;
@@ -39,6 +41,8 @@ public class MessageFragment extends SupportFragment {
     private MultiTypeAdapter adapter;
     private ResponseDataObjectList<TMessage> responseDataMessageList;
     private List<TMessage> messageList = new ArrayList<>();
+
+    private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     public static MessageFragment newInstance() {
 
@@ -81,7 +85,7 @@ public class MessageFragment extends SupportFragment {
 
     //获取messageList
     private void getMessageList(View view) {
-        String authorization = Network.getAuthorization();
+        String authorization = LoginUtil.getAuthorization();
         Network.getUserApi().getMessageList(authorization)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,7 +107,7 @@ public class MessageFragment extends SupportFragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("************");
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
     }

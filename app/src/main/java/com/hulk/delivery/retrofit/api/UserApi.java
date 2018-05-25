@@ -4,6 +4,7 @@ import com.hulk.delivery.entity.ResponseDataObjectList;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TAddress;
 import com.hulk.delivery.entity.TCollect;
+import com.hulk.delivery.entity.TFood;
 import com.hulk.delivery.entity.TMessage;
 import com.hulk.delivery.entity.TOrder;
 import com.hulk.delivery.entity.TShop;
@@ -12,6 +13,7 @@ import com.hulk.delivery.entity.User;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -60,6 +62,10 @@ public interface UserApi {
     @GET("sys/user/{phone}")
     Observable<ResponseResult<User>> getUser(@Path("phone") String phone);
 
+    //获取userId
+    @GET("sys/user/userId")
+    Observable<ResponseResult> getUserId(@Header("Authorization") String authorization);
+
     //获取地址列表
     @GET("t/address")
     Observable<ResponseResult<ResponseDataObjectList<TAddress>>> getAddressList(@Header("Authorization") String authorization);
@@ -71,6 +77,16 @@ public interface UserApi {
     //更新地址
     @PUT("t/address")
     Observable<ResponseResult> doUpdateAddress(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //删除地址
+    @DELETE("t/address/{id}")
+    Observable<ResponseResult> deleteAddress(@Header("Authorization") String authorization,
+                                             @Path("id") Integer id);
+
+    //设置默认地址
+    @PUT("t/address/{id}")
+    Observable<ResponseResult> setDefaultAddress(@Header("Authorization") String authorization,
+                                                 @Path("id") Integer id);
 
     //获取订单列表
     @GET("t/order")
@@ -87,5 +103,9 @@ public interface UserApi {
     //获取collect商家列表
     @GET("t/collect")
     Observable<ResponseResult<ResponseDataObjectList<TCollect>>> getCollectShopList(@Header("Authorization") String authorization);
+
+    //获取Food列表
+    @GET("t/food")
+    Observable<ResponseResult<ResponseDataObjectList<TFood>>> getFoodList();
 
 }

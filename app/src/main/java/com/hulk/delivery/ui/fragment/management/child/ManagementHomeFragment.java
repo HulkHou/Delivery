@@ -17,7 +17,8 @@ import com.hulk.delivery.entity.ResponseDataObjectList;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TOrder;
 import com.hulk.delivery.retrofit.Network;
-import com.hulk.delivery.ui.fragment.management.ManagementFragment;
+import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RecycleViewDivider;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.uber.autodispose.AutoDisposeConverter;
@@ -37,15 +38,19 @@ import me.yokeyword.fragmentation.SupportFragment;
  */
 public class ManagementHomeFragment extends SupportFragment {
 
+    private View view;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private Boolean isLogin = false;
     private Handler handler = new Handler();
 
     private MultiTypeAdapter adapter;
     private ResponseDataObjectList<TOrder> responseDataOrdersList;
     private List<TOrder> ordersList = new ArrayList<>();
+
+    private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     public static ManagementHomeFragment newInstance() {
 
@@ -58,8 +63,10 @@ public class ManagementHomeFragment extends SupportFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.management_frag_home, container, false);
-        getOrdersList(view);
+        view = inflater.inflate(R.layout.management_frag_home, container, false);
+        if (isLogin) {
+            getOrdersList(view);
+        }
         return view;
     }
 
@@ -102,8 +109,10 @@ public class ManagementHomeFragment extends SupportFragment {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        ordersList.clear();
-                        getOrdersList(view);
+                        if (isLogin) {
+                            ordersList.clear();
+                            getOrdersList(view);
+                        }
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 2000);
@@ -114,7 +123,7 @@ public class ManagementHomeFragment extends SupportFragment {
 
     //获取ordersList
     private void getOrdersList(View view) {
-        String authorization = Network.getAuthorization();
+        String authorization = LoginUtil.getAuthorization();
         Network.getUserApi().getOrderList(authorization)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -136,15 +145,26 @@ public class ManagementHomeFragment extends SupportFragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("************");
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
     }
 
     @Override
+    public void onSupportVisible() {
+        super.onSupportVisible();
+        isLogin = LoginUtil.checkLogin(_mActivity);
+        ordersList.clear();
+        if (isLogin) {
+            getOrdersList(view);
+        } else {
+            initView(view);
+        }
+    }
+
+    @Override
     public boolean onBackPressedSupport() {
-        // 这里实际项目中推荐使用 EventBus接耦
-        ((ManagementFragment) getParentFragment()).onBackToFirstFragment();
+        pop();
         return true;
     }
 

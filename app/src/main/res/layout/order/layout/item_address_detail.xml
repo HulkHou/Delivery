@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_address_detail"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,7 +24,6 @@
         android:layout_alignBottom="@+id/address_tag_title"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/address_tag_title"
-        android:text="标签"
         android:textSize="@dimen/textSize_normal" />
 
     <TextView
@@ -46,7 +46,6 @@
         android:layout_alignBottom="@+id/consignee_title"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/consignee_title"
-        android:text="标签"
         android:textSize="@dimen/textSize_normal" />
 
     <TextView
@@ -69,7 +68,6 @@
         android:layout_alignBottom="@+id/phone_title"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/phone_title"
-        android:text="标签"
         android:textSize="@dimen/textSize_normal" />
 
     <TextView
@@ -92,7 +90,6 @@
         android:layout_alignBottom="@+id/unit_no_title"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/unit_no_title"
-        android:text="标签"
         android:textSize="@dimen/textSize_normal" />
 
     <TextView
@@ -115,7 +112,6 @@
         android:layout_alignBottom="@+id/build_name_title"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/build_name_title"
-        android:text="标签"
         android:textSize="@dimen/textSize_normal" />
 
     <TextView
@@ -139,7 +135,59 @@
         android:layout_alignBottom="@+id/street_title"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/street_title"
-        android:text="标签"
         android:textSize="@dimen/textSize_normal" />
+
+    <com.hulk.delivery.util.StateButton
+        android:id="@+id/btn_address_delete"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/build_name_title"
+        android:layout_below="@+id/street"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
+        android:background="@null"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:minWidth="40dp"
+        android:text="删除"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/textSize_title"
+        app:radius="4dp" />
+
+    <com.hulk.delivery.util.StateButton
+        android:id="@+id/btn_address_modify"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/street"
+        android:layout_below="@+id/street_title"
+        android:layout_gravity="center_horizontal"
+        android:background="@null"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:minWidth="40dp"
+        android:text="修改"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/textSize_title"
+        app:radius="4dp" />
+
+    <com.hulk.delivery.util.StateButton
+        android:id="@+id/btn_address_set_default"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btn_address_modify"
+        android:layout_alignBottom="@+id/btn_address_modify"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="48dp"
+        android:layout_toEndOf="@+id/btn_address_modify"
+        android:background="@null"
+        android:gravity="center"
+        android:minHeight="30dp"
+        android:minWidth="40dp"
+        android:text="设为默认"
+        android:textColor="@color/text_black_color"
+        android:textSize="@dimen/textSize_title"
+        app:radius="4dp" />
 
 </RelativeLayout>

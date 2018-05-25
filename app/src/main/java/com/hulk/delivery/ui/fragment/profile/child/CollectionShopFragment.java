@@ -1,11 +1,10 @@
-package com.hulk.delivery.ui.fragment.order.child;
+package com.hulk.delivery.ui.fragment.profile.child;
 
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +18,14 @@ import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper;
 import com.hulk.delivery.R;
-import com.hulk.delivery.adapter.BannerAdapter;
 import com.hulk.delivery.adapter.MainViewHolder;
 import com.hulk.delivery.adapter.SubAdapter;
 import com.hulk.delivery.adapter.TitleAdapter;
 import com.hulk.delivery.entity.ResponseDataObjectList;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TCollect;
-import com.hulk.delivery.entity.TShop;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.ui.fragment.order.child.ShopDetailFragment;
 import com.hulk.delivery.util.AlertDialogUtils;
 import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
@@ -46,40 +44,33 @@ import me.yokeyword.fragmentation.SupportFragment;
  * Created by hulk-out on 2018/3/14.
  */
 
-public class OrderShopFragment extends SupportFragment
+public class CollectionShopFragment extends SupportFragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
-    static OrderShopFragment fragment;
+    static CollectionShopFragment fragment;
     private View view;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView recyclerView;
     private DelegateAdapter adapter;
-    private BannerAdapter bAdapter;
     private SubAdapter adapter_collection_title;
     private SubAdapter adapter_collection;
-    private SubAdapter adapter_shop_list_title;
-    private SubAdapter adapter_shop_list;
     private SubAdapter adapter_footer;
 
     private boolean hasmore = true;
     private int page = 1;
     private Handler handler = new Handler();
 
-    private List<TShop> shopList = new ArrayList<>();
     private List<TCollect> collectShopList = new ArrayList<>();
-    private ResponseDataObjectList<TShop> responseDataShopList;
     private ResponseDataObjectList<TCollect> responseDataCollectShopList;
-
-    private Boolean isLogin = false;
 
     private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
 
-    public static OrderShopFragment newInstance() {
+    public static CollectionShopFragment newInstance() {
 
         Bundle args = new Bundle();
-        fragment = new OrderShopFragment();
+        fragment = new CollectionShopFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,11 +80,8 @@ public class OrderShopFragment extends SupportFragment
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.order_frag_shop, container, false);
-        if (isLogin) {
-            getCollectShopList(view);
-        }
-        getShopList(view);
+        view = inflater.inflate(R.layout.collection_frag_shop, container, false);
+        getCollectShopList(view);
         return view;
     }
 
@@ -120,8 +108,8 @@ public class OrderShopFragment extends SupportFragment
                             @Override
                             public void run() {
                                 if (page < 2) {
-                                    getShopList(view);
-                                    adapter_shop_list.notifyDataSetChanged();
+                                    getCollectShopList(view);
+                                    adapter_collection.notifyDataSetChanged();
                                     page++;
                                     hasmore = true;
                                 } else {
@@ -137,69 +125,8 @@ public class OrderShopFragment extends SupportFragment
         };
         recyclerView.addOnScrollListener(onScrollListener);
 
-        //未登录不显示收藏列表
-        if (isLogin) {
-            //我的收藏标题
-            adapter_collection_title = new TitleAdapter(_mActivity, getTitleHelper()) {
-                @Override
-                public void onBindViewHolder(MainViewHolder holder, int position) {
-                    super.onBindViewHolder(holder, position);
-                }
-
-                //设置标题名称
-                @Override
-                protected String getText() {
-                    return getString(R.string.shop_collection);
-                }
-
-                //设置标题左右图标
-                @Override
-                protected int[] getDrawables() {
-                    return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
-                }
-
-            };
-            adapter.addAdapter(adapter_collection_title);
-
-            //我的收藏
-            SingleLayoutHelper layoutHelper = new SingleLayoutHelper();
-            adapter_collection = new SubAdapter(_mActivity, layoutHelper, 1) {
-                @Override
-                public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                    return new MainViewHolder(LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.item_collection, parent, false));
-                }
-
-                @Override
-                public void onBindViewHolder(MainViewHolder holder, int position) {
-                    super.onBindViewHolder(holder, position);
-                    RecyclerView recyclerView = holder.itemView.findViewById(R.id.banner);
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(_mActivity);
-                    linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-                    recyclerView.setLayoutManager(linearLayoutManager);
-
-                    bAdapter = new BannerAdapter(_mActivity, fragment, collectShopList);
-                    recyclerView.setAdapter(bAdapter);
-
-                    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                            super.onScrollStateChanged(recyclerView, newState);
-                        }
-
-                        @Override
-                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-                        }
-                    });
-
-                }
-            };
-            adapter.addAdapter(adapter_collection);
-        }
-
-        //商家列表标题
-        adapter_shop_list_title = new TitleAdapter(_mActivity, getTitleHelper()) {
+        //我的收藏标题
+        adapter_collection_title = new TitleAdapter(_mActivity, getTitleHelper()) {
             @Override
             public void onBindViewHolder(MainViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
@@ -208,7 +135,7 @@ public class OrderShopFragment extends SupportFragment
             //设置标题名称
             @Override
             protected String getText() {
-                return getString(R.string.shop_list_title);
+                return getString(R.string.shop_collection);
             }
 
             //设置标题左右图标
@@ -218,11 +145,11 @@ public class OrderShopFragment extends SupportFragment
             }
 
         };
-        adapter.addAdapter(adapter_shop_list_title);
+        adapter.addAdapter(adapter_collection_title);
 
-        //商家列表
+        //收藏列表
         LinearLayoutHelper linearLayoutHelper = new LinearLayoutHelper();
-        adapter_shop_list = new SubAdapter(_mActivity, linearLayoutHelper, shopList.size()) {
+        adapter_collection = new SubAdapter(_mActivity, linearLayoutHelper, collectShopList.size()) {
 
             @Override
             public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -241,11 +168,11 @@ public class OrderShopFragment extends SupportFragment
                 TextView mShippingFreeFee = holder.itemView.findViewById(R.id.shipping_free_fee);
                 TextView mShopDesc = holder.itemView.findViewById(R.id.shop_desc);
 
-                String shopName = shopList.get(position).getShopName();
-                String shippingStartFee = shopList.get(position).getShippingStartFee().toString();
-                String shippingFee = shopList.get(position).getShippingFee().toString();
-                String shippingFreeFee = shopList.get(position).getShippingFreeFee().toString();
-                String shopDesc = shopList.get(position).getShopDesc();
+                String shopName = collectShopList.get(position).getShopName();
+                String shippingStartFee = collectShopList.get(position).getShippingStartFee().toString();
+                String shippingFee = collectShopList.get(position).getShippingFee().toString();
+                String shippingFreeFee = collectShopList.get(position).getShippingFreeFee().toString();
+                String shopDesc = collectShopList.get(position).getShopDesc();
 
                 mShopName.setText(shopName);
                 mShippingStartFee.setText(shippingStartFee);
@@ -263,10 +190,10 @@ public class OrderShopFragment extends SupportFragment
 
             @Override
             public int getItemCount() {
-                return shopList.size();
+                return collectShopList.size();
             }
         };
-        adapter.addAdapter(adapter_shop_list);
+        adapter.addAdapter(adapter_collection);
 
         //下拉刷新
         mSwipeRefreshLayout = view.findViewById(R.id.SwipeRefreshLayout_shop);
@@ -286,12 +213,8 @@ public class OrderShopFragment extends SupportFragment
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (isLogin) {
-                            collectShopList.clear();
-                            getCollectShopList(view);
-                        }
-                        shopList.clear();
-                        getShopList(view);
+                        collectShopList.clear();
+                        getCollectShopList(view);
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                 }, 2000);
@@ -342,13 +265,8 @@ public class OrderShopFragment extends SupportFragment
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
-        isLogin = LoginUtil.checkLogin(_mActivity);
-        if (isLogin) {
-            collectShopList.clear();
-            getCollectShopList(view);
-        }
-        shopList.clear();
-        getShopList(view);
+        collectShopList.clear();
+        getCollectShopList(view);
     }
 
     private SingleLayoutHelper getTitleHelper() {
@@ -378,34 +296,6 @@ public class OrderShopFragment extends SupportFragment
                         if ("200".equals(code)) {
                             responseDataCollectShopList = (ResponseDataObjectList<TCollect>) responseResult.getData();
                             collectShopList = responseDataCollectShopList.getList();
-                            initView(view);
-                        } else {
-                            _mActivity.onBackPressed();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
-                    }
-                });
-    }
-
-    //获取shopList
-    private void getShopList(View view) {
-        Network.getUserApi().getShopList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(bindLifecycle())
-                .subscribe(new Consumer<ResponseResult<ResponseDataObjectList<TShop>>>() {
-                    @Override
-                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
-                        String code = responseResult.getCode();
-
-                        //status等于200时为查询成功
-                        if ("200".equals(code)) {
-                            responseDataShopList = (ResponseDataObjectList<TShop>) responseResult.getData();
-                            shopList = responseDataShopList.getList();
                             initView(view);
                         } else {
                             _mActivity.onBackPressed();

@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper;
 import com.alibaba.android.vlayout.layout.StickyLayoutHelper;
+import com.hulk.delivery.MyApplication;
 import com.hulk.delivery.R;
 import com.hulk.delivery.adapter.MainViewHolder;
 import com.hulk.delivery.adapter.SubAdapter;
@@ -22,8 +24,11 @@ import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TAddress;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.ScreenUtil;
+import com.hulk.delivery.util.StateButton;
 import com.uber.autodispose.AutoDisposeConverter;
 
 import java.util.ArrayList;
@@ -55,6 +60,8 @@ public class OrderAddressFragment extends SupportFragment {
     private ResponseDataObjectList<TAddress> responseDataAddressList;
 
     private Event.AddressInfoEvent addressInfoEvent;
+
+    private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     public OrderAddressFragment() {
         // Required empty public constructor
@@ -147,35 +154,76 @@ public class OrderAddressFragment extends SupportFragment {
             public void onBindViewHolder(MainViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
                 RelativeLayout addDetail = holder.itemView.findViewById(R.id.rl_address_detail);
-                TextView mTddressTag = holder.itemView.findViewById(R.id.address_tag);
+                TextView mAddressTag = holder.itemView.findViewById(R.id.address_tag);
                 TextView mConsignee = holder.itemView.findViewById(R.id.consignee);
                 TextView mPhone = holder.itemView.findViewById(R.id.phone);
                 TextView mUnitNo = holder.itemView.findViewById(R.id.unit_no);
                 TextView mBuildName = holder.itemView.findViewById(R.id.build_name);
                 TextView mStreet = holder.itemView.findViewById(R.id.street);
+                StateButton modifyAddressButton = holder.itemView.findViewById(R.id.btn_address_modify);
+                StateButton deleteAddressButton = holder.itemView.findViewById(R.id.btn_address_delete);
+                StateButton setDefaultAddressButton = holder.itemView.findViewById(R.id.btn_address_set_default);
 
-                Integer id = addressList.get(position).getAddressId();
-                String addressTag = addressList.get(position).getAddressTag();
-                String consignee = addressList.get(position).getConsignee();
-                String phone = addressList.get(position).getPhone();
-                String unitNo = addressList.get(position).getUnitNo();
-                String buildName = addressList.get(position).getBuildName();
-                String street = addressList.get(position).getStreet();
+                mAddressTag.setText(addressList.get(position).getAddressTag());
+                mConsignee.setText(addressList.get(position).getConsignee());
+                mPhone.setText(addressList.get(position).getPhone());
+                mUnitNo.setText(addressList.get(position).getUnitNo());
+                mBuildName.setText(addressList.get(position).getBuildName());
+                mStreet.setText(addressList.get(position).getStreet());
 
-                mTddressTag.setText(addressTag);
-                mConsignee.setText(consignee);
-                mPhone.setText(phone);
-                mUnitNo.setText(unitNo);
-                mBuildName.setText(buildName);
-                mStreet.setText(street);
+                if (addressList.get(position).getIsDefault().equals(1)) {
+                    setDefaultAddressButton.setVisibility(View.GONE);
+                }
 
                 addDetail.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Integer id = addressList.get(position).getAddressId();
+                        String addressTag = addressList.get(position).getAddressTag();
+                        String consignee = addressList.get(position).getConsignee();
+                        String phone = addressList.get(position).getPhone();
+                        String unitNo = addressList.get(position).getUnitNo();
+                        String buildName = addressList.get(position).getBuildName();
+                        String street = addressList.get(position).getStreet();
+
                         addressInfoEvent = new Event.AddressInfoEvent();
                         addressInfoEvent.tAddress = new TAddress(id, addressTag, consignee, phone, street, buildName, unitNo);
                         EventBusActivityScope.getDefault(_mActivity).postSticky(addressInfoEvent);
                         start(OrderUpdateAddressFragment.newInstance());
+                    }
+                });
+
+                modifyAddressButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Integer id = addressList.get(position).getAddressId();
+                        String addressTag = addressList.get(position).getAddressTag();
+                        String consignee = addressList.get(position).getConsignee();
+                        String phone = addressList.get(position).getPhone();
+                        String unitNo = addressList.get(position).getUnitNo();
+                        String buildName = addressList.get(position).getBuildName();
+                        String street = addressList.get(position).getStreet();
+
+                        addressInfoEvent = new Event.AddressInfoEvent();
+                        addressInfoEvent.tAddress = new TAddress(id, addressTag, consignee, phone, street, buildName, unitNo);
+                        EventBusActivityScope.getDefault(_mActivity).postSticky(addressInfoEvent);
+                        start(OrderUpdateAddressFragment.newInstance());
+                    }
+                });
+
+                deleteAddressButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Integer id = addressList.get(position).getAddressId();
+                        deleteAddress(id);
+                    }
+                });
+
+                setDefaultAddressButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Integer id = addressList.get(position).getAddressId();
+                        setDefaultAddress(id);
                     }
                 });
 
@@ -213,7 +261,7 @@ public class OrderAddressFragment extends SupportFragment {
 
     //获取AddressList
     private void getAddressList() {
-        String authorization = Network.getAuthorization();
+        String authorization = LoginUtil.getAuthorization();
         Network.getUserApi().getAddressList(authorization)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -235,10 +283,66 @@ public class OrderAddressFragment extends SupportFragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("************");
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
     }
+
+    //删除地址
+    private void deleteAddress(Integer id) {
+        String authorization = LoginUtil.getAuthorization();
+        Network.getUserApi().deleteAddress(authorization, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            getAddressList();
+                            Toast.makeText(MyApplication.getInstance(), R.string.deleteSuccess, Toast.LENGTH_SHORT).show();
+                        } else {
+                            _mActivity.onBackPressed();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
+    }
+
+    private void setDefaultAddress(Integer id) {
+        //获取token
+        String authorization = LoginUtil.getAuthorization();
+
+        Network.getUserApi().setDefaultAddress(authorization, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            Toast.makeText(getActivity(), R.string.success, Toast.LENGTH_SHORT).show();
+                            getAddressList();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
+    }
+
 
     @Override
     public void onSupportVisible() {

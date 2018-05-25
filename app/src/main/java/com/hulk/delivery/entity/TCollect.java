@@ -32,6 +32,28 @@ public class TCollect {
     private String foodName;
 
     /**
+     * 起送标准
+     */
+    private String shippingStartFee;
+
+    /**
+     * 配送费用
+     */
+    private String shippingFee;
+
+
+    /**
+     * 满免运费额度
+     */
+    private String shippingFreeFee;
+
+
+    /**
+     * 门店简介
+     */
+    private String shopDesc;
+
+    /**
      * 获取主键
      *
      * @return id - 主键
@@ -117,5 +139,37 @@ public class TCollect {
 
     public void setFoodName(String foodName) {
         this.foodName = foodName;
+    }
+
+    public String getShippingStartFee() {
+        return shippingStartFee;
+    }
+
+    public void setShippingStartFee(String shippingStartFee) {
+        this.shippingStartFee = shippingStartFee;
+    }
+
+    public String getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(String shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public String getShippingFreeFee() {
+        return shippingFreeFee;
+    }
+
+    public void setShippingFreeFee(String shippingFreeFee) {
+        this.shippingFreeFee = shippingFreeFee;
+    }
+
+    public String getShopDesc() {
+        return shopDesc;
+    }
+
+    public void setShopDesc(String shopDesc) {
+        this.shopDesc = shopDesc;
     }
 }

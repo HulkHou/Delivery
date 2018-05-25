@@ -14,15 +14,12 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.hulk.delivery.R;
 import com.hulk.delivery.entity.ResponseResult;
-import com.hulk.delivery.entity.User;
-import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.schibstedspain.leku.LocationPickerActivity;
 import com.uber.autodispose.AutoDisposeConverter;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +44,7 @@ public class OrderAddAddressFragment extends SupportFragment {
     private static final String TAG = "OrderAddAddressFragment";
     private String address;
 
-    private Integer userId;
+    private String userId;
     private String addressTag;
     private Integer isDefault;
     private String consignee;
@@ -55,6 +52,8 @@ public class OrderAddAddressFragment extends SupportFragment {
     private String street;
     private String buildName;
     private String unitNo;
+
+    private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     @BindView(R.id.et_order_address_add_tag)
     EditText tagView;
@@ -91,23 +90,23 @@ public class OrderAddAddressFragment extends SupportFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.order_frag_address_add, container, false);
-        EventBusActivityScope.getDefault(_mActivity).register(this);
+//        EventBusActivityScope.getDefault(_mActivity).register(this);
         ButterKnife.bind(this, view);
         return view;
     }
 
-    /**
-     * 选择UserInfo事件
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onUserInfoEvent(Event.UserInfoEvent event) {
-        if (event != null) {
-            User user = event.user;
-            userId = user.getId();
-        }
-    }
+//    /**
+//     * 选择UserInfo事件
+//     *
+//     * @param event
+//     */
+//    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+//    public void onUserInfoEvent(Event.UserInfoEvent event) {
+//        if (event != null) {
+//            User user = event.user;
+//            userId = user.getId();
+//        }
+//    }
 
     //地点选取
     private void locationPicker() {
@@ -172,9 +171,8 @@ public class OrderAddAddressFragment extends SupportFragment {
     @OnClick(R.id.btn_order_address_add_submit)
     public void addressAdd(View view) {
 
-        isDefault = 0;
-
         addressTag = tagView.getText().toString();
+        isDefault = 0;
         consignee = nameView.getText().toString();
         phone = phoneView.getText().toString();
         street = streetView.getText().toString();
@@ -195,7 +193,7 @@ public class OrderAddAddressFragment extends SupportFragment {
             e.printStackTrace();
         }
         //获取token
-        String authorization = Network.getAuthorization();
+        String authorization = LoginUtil.getAuthorization();
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), result.toString());
 
         Network.getUserApi().doAddAddress(authorization, body)
@@ -215,7 +213,30 @@ public class OrderAddAddressFragment extends SupportFragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("************");
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
+    }
+
+    public void getUserId() {
+        String authorization = LoginUtil.getAuthorization();
+        Network.getUserApi().getUserId(authorization)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            userId = (String) responseResult.getData();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
     }
@@ -223,6 +244,7 @@ public class OrderAddAddressFragment extends SupportFragment {
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
+        getUserId();
     }
 
     protected <T> AutoDisposeConverter<T> bindLifecycle() {

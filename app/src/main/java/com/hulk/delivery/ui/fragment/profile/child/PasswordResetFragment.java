@@ -20,6 +20,7 @@ import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.util.AlertDialogUtils;
 import com.hulk.delivery.util.CountDownTimerUtils;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.StateButton;
 import com.hulk.delivery.util.StringUtilsCustomize;
@@ -289,7 +290,7 @@ public class PasswordResetFragment extends SupportFragment {
     //重置密码
     private void resetPassword() {
         //获取token
-        String authorization = Network.getAuthorization();
+        String authorization = LoginUtil.getAuthorization();
         //请求重置密码API
         Network.getUserApi().doResetPassword(authorization, passwordNew, passwordConfirm)
                 .subscribeOn(Schedulers.io())

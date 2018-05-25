@@ -51,16 +51,16 @@
             android:text="20RM"
             android:textSize="@dimen/textSize_small" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/shipping_start_fee_title"
-            android:layout_marginEnd="17dp"
-            android:background="@drawable/add"
-            android:text="加入购物车"
-            android:textColor="@color/text_gold_color"
-            android:textSize="12sp" />
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignTop="@+id/shipping_start_fee_title"-->
+        <!--android:layout_marginEnd="17dp"-->
+        <!--android:background="@drawable/add"-->
+        <!--android:text="加入购物车"-->
+        <!--android:textColor="@color/text_gold_color"-->
+        <!--android:textSize="12sp" />-->
 
         <TextView
             android:id="@+id/shipping_fee_title"

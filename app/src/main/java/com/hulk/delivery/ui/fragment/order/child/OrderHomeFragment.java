@@ -38,6 +38,7 @@ import com.hulk.delivery.entity.Results;
 import com.hulk.delivery.retrofit.Network;
 import com.hulk.delivery.ui.fragment.login.LoginByPasswordFragment;
 import com.hulk.delivery.ui.fragment.profile.child.MessageFragment;
+import com.hulk.delivery.util.AlertDialogUtils;
 import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.hulk.delivery.util.ScreenUtil;
@@ -73,6 +74,8 @@ public class OrderHomeFragment extends SupportFragment {
     private String provider;
     private String latlng;
     private String formattedAddress;
+
+    private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     public static OrderHomeFragment newInstance() {
 
@@ -294,7 +297,7 @@ public class OrderHomeFragment extends SupportFragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("************");
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
     }

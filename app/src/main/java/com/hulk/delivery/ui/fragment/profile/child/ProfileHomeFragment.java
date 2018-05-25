@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.hulk.delivery.R;
 import com.hulk.delivery.ui.fragment.login.LoginByPasswordFragment;
+import com.hulk.delivery.ui.fragment.management.child.ManagementHomeFragment;
+import com.hulk.delivery.ui.fragment.order.child.OrderAddressFragment;
 import com.hulk.delivery.ui.fragment.profile.ProfileFragment;
 import com.hulk.delivery.util.LoginUtil;
 
@@ -49,6 +51,36 @@ public class ProfileHomeFragment extends SupportFragment {
         view = inflater.inflate(R.layout.profile_frag_home, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    //订单管理
+    @OnClick(R.id.rl_profile_orders_management)
+    public void orders(View view) {
+        if (LoginUtil.checkLogin(_mActivity)) {
+            start(ManagementHomeFragment.newInstance());
+        } else {
+            start(LoginByPasswordFragment.newInstance());
+        }
+    }
+
+    //收藏管理
+    @OnClick(R.id.rl_profile_collection_management)
+    public void collection(View view) {
+        if (LoginUtil.checkLogin(_mActivity)) {
+            start(CollectionFragment.newInstance());
+        } else {
+            start(LoginByPasswordFragment.newInstance());
+        }
+    }
+
+    //地址管理
+    @OnClick(R.id.rl_profile_address_management)
+    public void address(View view) {
+        if (LoginUtil.checkLogin(_mActivity)) {
+            start(OrderAddressFragment.newInstance());
+        } else {
+            start(LoginByPasswordFragment.newInstance());
+        }
     }
 
     //设置

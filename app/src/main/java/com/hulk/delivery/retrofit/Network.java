@@ -91,14 +91,6 @@ public class Network {
         return googleApi;
     }
 
-    //获取头信息用token
-    public static String getAuthorization() {
-        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(app);
-        authorization = mPref.getString(AUTHORIZATION, "");
-        return authorization;
-    }
-
-
     public static SharedPrefsCookiePersistor getSharedPrefsCookiePersistor() {
         return sharedPrefsCookiePersistor;
     }

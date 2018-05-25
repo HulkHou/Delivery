@@ -16,6 +16,8 @@ import com.hulk.delivery.R;
 import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.event.Event;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.util.AlertDialogUtils;
+import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.schibstedspain.leku.LocationPickerActivity;
 import com.uber.autodispose.AutoDisposeConverter;
@@ -54,6 +56,8 @@ public class OrderUpdateAddressFragment extends SupportFragment {
     private String street;
     private String buildName;
     private String unitNo;
+
+    private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     @BindView(R.id.et_order_address_add_tag)
     EditText tagView;
@@ -206,7 +210,7 @@ public class OrderUpdateAddressFragment extends SupportFragment {
             e.printStackTrace();
         }
         //获取token
-        String authorization = Network.getAuthorization();
+        String authorization = LoginUtil.getAuthorization();
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), result.toString());
 
         Network.getUserApi().doUpdateAddress(authorization, body)
@@ -226,7 +230,7 @@ public class OrderUpdateAddressFragment extends SupportFragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("************");
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
                     }
                 });
     }
