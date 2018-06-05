@@ -1,6 +1,5 @@
 package com.hulk.delivery;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -115,14 +114,14 @@ public class MainActivity extends SupportActivity implements BaseMainFragment.On
 
         //如果使用颜色的变化不足以展示一个选项Item的选中与非选中状态，
         // 可以使用BottomNavigationItem.setInActiveIcon()方法来设置。
-        bottomNavigationBar.addItem(new BottomNavigationItem(R.mipmap.ic_food, "点餐")
-                .setInactiveIcon(getResources().getDrawable(R.mipmap.ic_food)))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_cart, "购物车")
-                        .setInactiveIcon(getResources().getDrawable(R.mipmap.ic_cart)))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_orders, "订单")
-                        .setInactiveIcon(getResources().getDrawable(R.mipmap.ic_orders)))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_profile, "我的")
-                        .setInactiveIcon(getResources().getDrawable(R.mipmap.ic_profile)))
+        bottomNavigationBar.addItem(new BottomNavigationItem(R.mipmap.navbar_order_press, "点餐")
+                .setInactiveIcon(getResources().getDrawable(R.mipmap.navbar_order_normal)))
+                .addItem(new BottomNavigationItem(R.mipmap.navbar_cart_press, "购物车")
+                        .setInactiveIcon(getResources().getDrawable(R.mipmap.navbar_cart_normal)))
+                .addItem(new BottomNavigationItem(R.mipmap.navbar_management_press, "订单")
+                        .setInactiveIcon(getResources().getDrawable(R.mipmap.navbar_management_normal)))
+                .addItem(new BottomNavigationItem(R.mipmap.navbar_profile_press, "我的")
+                        .setInactiveIcon(getResources().getDrawable(R.mipmap.navbar_profile_normal)))
                 .setFirstSelectedPosition(0)
                 .initialise(); //所有的设置需在调用该方法前完成
     }

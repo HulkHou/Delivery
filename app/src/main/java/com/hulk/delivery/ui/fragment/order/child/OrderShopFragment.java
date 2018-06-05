@@ -36,6 +36,8 @@ import com.uber.autodispose.AutoDisposeConverter;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -155,7 +157,7 @@ public class OrderShopFragment extends SupportFragment
                 //设置标题左右图标
                 @Override
                 protected int[] getDrawables() {
-                    return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
+                    return new int[]{R.mipmap.mod_collection_normal};
                 }
 
             };
@@ -214,7 +216,7 @@ public class OrderShopFragment extends SupportFragment
             //设置标题左右图标
             @Override
             protected int[] getDrawables() {
-                return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
+                return new int[]{R.mipmap.mod_shop};
             }
 
         };
@@ -224,16 +226,21 @@ public class OrderShopFragment extends SupportFragment
         LinearLayoutHelper linearLayoutHelper = new LinearLayoutHelper();
         adapter_shop_list = new SubAdapter(_mActivity, linearLayoutHelper, shopList.size()) {
 
+//            @BindView(R.id.shop_desc)
+//            TextView mShopDesc;
+
             @Override
             public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_shop, parent, false);
+//                ButterKnife.bind(itemView);
                 return new MainViewHolder(itemView);
             }
 
             @Override
             public void onBindViewHolder(MainViewHolder holder, int position) {
                 super.onBindViewHolder(holder, position);
+
                 RelativeLayout mShopDetail = holder.itemView.findViewById(R.id.rl_shop_detail);
                 TextView mShopName = holder.itemView.findViewById(R.id.shop_name);
                 TextView mShippingStartFee = holder.itemView.findViewById(R.id.shipping_start_fee);
@@ -386,7 +393,7 @@ public class OrderShopFragment extends SupportFragment
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.loginAgain);
                     }
                 });
     }

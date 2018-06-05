@@ -112,44 +112,6 @@ public class OrderHomeFragment extends SupportFragment {
         if (findChildFragment(OrderFilterFragment.class) == null) {
             loadRootFragment(R.id.drawer_filter_content, OrderFilterFragment.newInstance());
         }
-        //搜索栏
-        StickyLayoutHelper stickyLayoutHelper = new StickyLayoutHelper();
-        adapter_search = new SubAdapter(_mActivity, stickyLayoutHelper, 1,
-                new VirtualLayoutManager
-                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ScreenUtil.dip2px(_mActivity, 50))) {
-            @Override
-            public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new MainViewHolder(LayoutInflater
-                        .from(parent.getContext())
-                        .inflate(R.layout.item_search, parent, false));
-            }
-
-            @Override
-            public void onBindViewHolder(MainViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-                ImageView filter = holder.itemView.findViewById(R.id.filter);
-                filter.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mDrawerLayout.openDrawer(mDrawerContent);
-                    }
-                });
-
-                ImageView message = holder.itemView.findViewById(R.id.message);
-                message.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (LoginUtil.checkLogin(_mActivity)) {
-                            start(MessageFragment.newInstance());
-                        } else {
-                            start(LoginByPasswordFragment.newInstance());
-                        }
-                    }
-                });
-            }
-        };
-        adapter.addAdapter(adapter_search);
 
         //地址栏
         SingleLayoutHelper addressLayoutHelper = new SingleLayoutHelper();
@@ -193,6 +155,45 @@ public class OrderHomeFragment extends SupportFragment {
             }
         };
         adapter.addAdapter(adapter_address);
+
+        //搜索栏
+        StickyLayoutHelper stickyLayoutHelper = new StickyLayoutHelper();
+        adapter_search = new SubAdapter(_mActivity, stickyLayoutHelper, 1,
+                new VirtualLayoutManager
+                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ScreenUtil.dip2px(_mActivity, 40))) {
+            @Override
+            public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new MainViewHolder(LayoutInflater
+                        .from(parent.getContext())
+                        .inflate(R.layout.item_search, parent, false));
+            }
+
+            @Override
+            public void onBindViewHolder(MainViewHolder holder, int position) {
+                super.onBindViewHolder(holder, position);
+                ImageView filter = holder.itemView.findViewById(R.id.filter);
+                filter.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mDrawerLayout.openDrawer(mDrawerContent);
+                    }
+                });
+
+                ImageView message = holder.itemView.findViewById(R.id.message);
+                message.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (LoginUtil.checkLogin(_mActivity)) {
+                            start(MessageFragment.newInstance());
+                        } else {
+                            start(LoginByPasswordFragment.newInstance());
+                        }
+                    }
+                });
+            }
+        };
+        adapter.addAdapter(adapter_search);
 
         recyclerView.setAdapter(adapter);
 

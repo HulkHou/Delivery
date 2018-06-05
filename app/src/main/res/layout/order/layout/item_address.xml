@@ -3,8 +3,7 @@
     android:id="@+id/ll_address"
     android:layout_width="match_parent"
     android:layout_height="30dp"
-    android:layout_marginTop="10dp"
-    android:background="#fff"
+    android:background="@mipmap/navbar_bg"
     android:orientation="horizontal">
 
     <ImageView
@@ -12,20 +11,18 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:src="@mipmap/ic_address" />
+        android:src="@mipmap/tabbar_location" />
 
     <TextView
         android:id="@+id/address_desc"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_marginLeft="10dp"
-        android:drawablePadding="10dp"
-        android:gravity="center"
-        android:text=""
-        android:textColor="#000"
-        android:textSize="@dimen/textSize_normal" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize_large" />
 
 </LinearLayout>

@@ -9,9 +9,20 @@
     <dimen name="fab_margin">24dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
-    <dimen name="textSize_title">20sp</dimen>
-    <dimen name="textSize_normal">16sp</dimen>
-    <dimen name="textSize_small">14sp</dimen>
+    <dimen name="textSize_large">14sp</dimen>
+    <dimen name="textSize_title">12.67sp</dimen>
+    <dimen name="textSize_normal">10.67sp</dimen>
+    <dimen name="textSize_small">9sp</dimen>
 
-    <dimen name="bottomBar_height">54dp</dimen>
+    <dimen name="top_margin">8dp</dimen>
+
+    <dimen name="bottomBar_height">40.33dp</dimen>
+    <dimen name="fixed_label_active">9sp</dimen>
+    <dimen name="fixed_label_inactive">7sp</dimen>
+    <dimen name="fixed_height_bottom_padding">2.33dp</dimen>
+    <dimen name="fixed_icon_grid">24dp</dimen>
+    <dimen name="fixed_height_top_padding_inactive">12dp
+    </dimen><!-- 8(Top Padding) - 12/2(extra padding due to badges) = 2 -->
+    <dimen name="fixed_height_top_padding_active">10dp
+    </dimen><!-- 6(Top Padding) - 12/2(extra padding due to badges) = 0 -->
 </resources>

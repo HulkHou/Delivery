@@ -22,6 +22,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
@@ -44,33 +45,47 @@ public class Network {
     private static final String AUTHORIZATION = "AUTHORIZATION";
     private static MyApplication app = MyApplication.getInstance();
     ;
+    private static SharedPreferences mPref;
+    private static SharedPreferences.Editor mEditor;
+    private static final String IS_LOGIN = "IS_LOGIN";
     private static String authorization;
 
     public static UserApi getUserApi() {
-        if (userApi == null) {
-            sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(app);
-            cookieJar = new PersistentCookieJar(new SetCookieCache(), sharedPrefsCookiePersistor);
-            okHttpClient = new OkHttpClient.Builder()
-                    .cookieJar(cookieJar)
-                    .addInterceptor(new Interceptor() {
-                        @Override
-                        public Response intercept(Chain chain) throws IOException {
-                            Request request = chain.request()
-                                    .newBuilder()
-                                    .build();
-                            return chain.proceed(request);
+        sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(app);
+        cookieJar = new PersistentCookieJar(new SetCookieCache(), sharedPrefsCookiePersistor);
+        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        okHttpClient = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request()
+                                .newBuilder()
+                                .build();
+                        Response response = chain.proceed(request);
+                        if ("500".equals(String.valueOf(response.code()))) {
+                            mPref = PreferenceManager.getDefaultSharedPreferences(MyApplication.getInstance());
+                            //设置token
+                            mEditor = mPref.edit();
+                            mEditor.putBoolean(IS_LOGIN, false);
+                            mEditor.commit();//提交修改
+                            return null;
                         }
-                    })
-                    .build();
+                        return response;
+                    }
+                })
+                .addNetworkInterceptor(logInterceptor)
+                .build();
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .client(okHttpClient)
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(gsonConverterFactory)
-                    .addCallAdapterFactory(rxJavaCallAdapterFactory)
-                    .build();
-            userApi = retrofit.create(UserApi.class);
-        }
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(okHttpClient)
+                .baseUrl(BASE_URL)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJavaCallAdapterFactory)
+                .build();
+        userApi = retrofit.create(UserApi.class);
+
         return userApi;
     }
 

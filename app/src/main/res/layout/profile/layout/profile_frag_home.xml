@@ -32,7 +32,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@mipmap/ic_profile" />
+                    app:srcCompat="@mipmap/navbar_profile_normal" />
 
                 <TextView
                     android:id="@+id/tv_profile_name"
@@ -73,7 +73,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@mipmap/ic_profile" />
+                    app:srcCompat="@mipmap/navbar_profile_normal" />
 
                 <TextView
                     android:id="@+id/tv_profile_orders_management"
@@ -113,7 +113,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@mipmap/ic_profile" />
+                    app:srcCompat="@mipmap/navbar_profile_normal" />
 
                 <TextView
                     android:id="@+id/tv_profile_collection_management"
@@ -153,7 +153,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@mipmap/ic_profile" />
+                    app:srcCompat="@mipmap/navbar_profile_normal" />
 
                 <TextView
                     android:id="@+id/tv_profile_address_management"
@@ -193,7 +193,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@mipmap/ic_profile" />
+                    app:srcCompat="@mipmap/navbar_profile_normal" />
 
                 <TextView
                     android:id="@+id/tv_profile_setting_management"
@@ -233,7 +233,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@mipmap/ic_profile" />
+                    app:srcCompat="@mipmap/navbar_profile_normal" />
 
                 <TextView
                     android:id="@+id/tv_profile_password_management"
@@ -273,7 +273,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@mipmap/ic_profile" />
+                    app:srcCompat="@mipmap/navbar_profile_normal" />
 
                 <TextView
                     android:id="@+id/tv_profile_message_management"

@@ -33,10 +33,11 @@ public abstract class TitleAdapter extends SubAdapter {
         TextView textView = holder.itemView.findViewById(R.id.title);
         textView.setText(getText());
         Drawable drawableLeft = mContext.getResources().getDrawable(getDrawables()[0]);
-        Drawable drawableRight = mContext.getResources().getDrawable(getDrawables()[1]);
+//        Drawable drawableRight = mContext.getResources().getDrawable(getDrawables()[1]);
         drawableLeft.setBounds(0, 0, drawableLeft.getMinimumWidth(), drawableLeft.getMinimumHeight());
-        drawableRight.setBounds(0, 0, drawableRight.getMinimumWidth(), drawableRight.getMinimumHeight());
-        textView.setCompoundDrawables(drawableLeft, null, drawableRight, null);
+//        drawableRight.setBounds(0, 0, drawableRight.getMinimumWidth(), drawableRight.getMinimumHeight());
+//        textView.setCompoundDrawables(drawableLeft, null, drawableRight, null);
+        textView.setCompoundDrawables(drawableLeft, null, null, null);
     }
 
     protected abstract String getText();

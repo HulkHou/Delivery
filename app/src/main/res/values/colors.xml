@@ -13,14 +13,18 @@
     <color name="item_activated_color">#77CEEE</color>
 
     <color name="text_gold_color">#AF8A4E</color>
-    <color name="text_black_color">#333333</color>
+    <color name="text_black_color">#000000</color>
     <color name="text_blue_color">#3cafff</color>
     <color name="text_gray_color">#909497</color>
 
     <color name="backgroundPrimary">#221912</color>
-    <color name="backgroundSecondary">#303F9F</color>
+    <color name="backgroundSecondary">#FFFFFF</color>
     <color name="backgroundTertiary">#3F3734</color>
     <color name="navigationBarTitleColor">#998E7C</color>
     <color name="navigationBarTitleSelectedColor">#D0AD47</color>
+
+    <color name="text_very_dark_gray_color">#353535</color>
+    <color name="text_dark_gray_color">#9a9a9a</color>
+    <color name="text_moderate_red_color">#d85b5b</color>
 
 </resources>

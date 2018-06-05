@@ -36,7 +36,7 @@
                 android:id="@+id/tv_item_shopcart_shopname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@mipmap/ic_cart"
+                android:drawableLeft="@mipmap/navbar_cart_normal"
                 android:drawablePadding="5dp"
                 android:padding="10dp"
                 android:text="龙的传人" />
