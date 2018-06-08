@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,6 +19,8 @@ import com.alibaba.android.vlayout.DelegateAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
 import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.hulk.delivery.R;
 import com.hulk.delivery.adapter.BannerAdapter;
 import com.hulk.delivery.adapter.MainViewHolder;
@@ -28,21 +31,24 @@ import com.hulk.delivery.entity.ResponseResult;
 import com.hulk.delivery.entity.TCollect;
 import com.hulk.delivery.entity.TShop;
 import com.hulk.delivery.retrofit.Network;
+import com.hulk.delivery.ui.fragment.login.LoginByPasswordFragment;
 import com.hulk.delivery.util.AlertDialogUtils;
 import com.hulk.delivery.util.LoginUtil;
 import com.hulk.delivery.util.RxLifecycleUtils;
 import com.uber.autodispose.AutoDisposeConverter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.fragmentation.SupportFragment;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * Created by hulk-out on 2018/3/14.
@@ -70,11 +76,14 @@ public class OrderShopFragment extends SupportFragment
 
     private List<TShop> shopList = new ArrayList<>();
     private List<TCollect> collectShopList = new ArrayList<>();
+    private Map<String, Integer> shopIdList = new HashMap<String, Integer>();
+
+    private String userId;
+    private String collectType;
+
     private ResponseDataObjectList<TShop> responseDataShopList;
     private ResponseDataObjectList<TCollect> responseDataCollectShopList;
-
     private Boolean isLogin = false;
-
     private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
 
@@ -92,10 +101,15 @@ public class OrderShopFragment extends SupportFragment
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.order_frag_shop, container, false);
+        isLogin = LoginUtil.checkLogin(_mActivity);
         if (isLogin) {
+            collectShopList.clear();
             getCollectShopList(view);
+            getUserId();
         }
+        shopList.clear();
         getShopList(view);
+        initView(view);
         return view;
     }
 
@@ -247,12 +261,23 @@ public class OrderShopFragment extends SupportFragment
                 TextView mShippingFee = holder.itemView.findViewById(R.id.shipping_fee);
                 TextView mShippingFreeFee = holder.itemView.findViewById(R.id.shipping_free_fee);
                 TextView mShopDesc = holder.itemView.findViewById(R.id.shop_desc);
+                ImageView mCollectionShop = holder.itemView.findViewById(R.id.collection_shop);
 
                 String shopName = shopList.get(position).getShopName();
                 String shippingStartFee = shopList.get(position).getShippingStartFee().toString();
                 String shippingFee = shopList.get(position).getShippingFee().toString();
                 String shippingFreeFee = shopList.get(position).getShippingFreeFee().toString();
                 String shopDesc = shopList.get(position).getShopDesc();
+
+                if (isLogin && shopIdList.containsKey(shopList.get(position).getShopId().toString())) {
+                    mCollectionShop.setImageResource(R.mipmap.list_collect_click_normal);
+                    mCollectionShop.setTag(R.id.tag_collect_is, "true");
+                    mCollectionShop.setTag(R.id.tag_collect_id, shopIdList.get(shopList.get(position).getShopId().toString()));
+                } else {
+                    mCollectionShop.setImageResource(R.mipmap.list_collect_normal_normal);
+                    mCollectionShop.setTag(R.id.tag_collect_is, "false");
+                    mCollectionShop.setTag(R.id.tag_collect_id, "no");
+                }
 
                 mShopName.setText(shopName);
                 mShippingStartFee.setText(shippingStartFee);
@@ -264,6 +289,25 @@ public class OrderShopFragment extends SupportFragment
                     @Override
                     public void onClick(View view) {
                         ((SupportFragment) getParentFragment()).start(ShopDetailFragment.newInstance());
+                    }
+                });
+
+                mCollectionShop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Integer collectItem = shopList.get(position).getShopId();
+                        String collectId = mCollectionShop.getTag(R.id.tag_collect_id).toString();
+                        if (isLogin) {
+                            if (mCollectionShop.getTag(R.id.tag_collect_is).toString().equals("true")) {
+                                mCollectionShop.setTag(R.id.tag_collect_is, "false");
+                                deleteCollectShop(collectId);
+                            } else if (mCollectionShop.getTag(R.id.tag_collect_is).toString().equals("false")) {
+                                mCollectionShop.setTag(R.id.tag_collect_is, "true");
+                                doCollectShop(view, userId, collectItem);
+                            }
+                        } else {
+                            ((SupportFragment) getParentFragment()).start(LoginByPasswordFragment.newInstance());
+                        }
                     }
                 });
             }
@@ -351,11 +395,10 @@ public class OrderShopFragment extends SupportFragment
         super.onSupportVisible();
         isLogin = LoginUtil.checkLogin(_mActivity);
         if (isLogin) {
-            collectShopList.clear();
             getCollectShopList(view);
+            getUserId();
         }
-        shopList.clear();
-        getShopList(view);
+        initView(view);
     }
 
     private SingleLayoutHelper getTitleHelper() {
@@ -385,7 +428,11 @@ public class OrderShopFragment extends SupportFragment
                         if ("200".equals(code)) {
                             responseDataCollectShopList = (ResponseDataObjectList<TCollect>) responseResult.getData();
                             collectShopList = responseDataCollectShopList.getList();
-                            initView(view);
+                            for (int i = 0; i < collectShopList.size(); i++) {
+                                if (collectShopList.get(i).getCollectType().toString().equals("1")) {
+                                    shopIdList.put(collectShopList.get(i).getCollectItem(), collectShopList.get(i).getId());
+                                }
+                            }
                         } else {
                             _mActivity.onBackPressed();
                         }
@@ -413,9 +460,94 @@ public class OrderShopFragment extends SupportFragment
                         if ("200".equals(code)) {
                             responseDataShopList = (ResponseDataObjectList<TShop>) responseResult.getData();
                             shopList = responseDataShopList.getList();
-                            initView(view);
                         } else {
                             _mActivity.onBackPressed();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
+    }
+
+    //收藏店铺
+    private void doCollectShop(View view, String userId, Integer collectItem) {
+
+        collectType = "1";
+        JSONObject result = new JSONObject();
+        try {
+            result.put("userId", userId);
+            result.put("collectType", collectType);
+            result.put("collectItem", collectItem);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String authorization = LoginUtil.getAuthorization();
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), result.toString());
+
+        Network.getUserApi().doCollectShop(authorization, body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
+    }
+
+    //取消收藏店铺
+    private void deleteCollectShop(String collectId) {
+        String authorization = LoginUtil.getAuthorization();
+        Network.getUserApi().deleteCollectShop(authorization, collectId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
+                    }
+                });
+    }
+
+    public void getUserId() {
+        String authorization = LoginUtil.getAuthorization();
+        Network.getUserApi().getUserId(authorization)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(bindLifecycle())
+                .subscribe(new Consumer<ResponseResult>() {
+                    @Override
+                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
+                        String code = responseResult.getCode();
+                        //status等于200时为查询成功
+                        if ("200".equals(code)) {
+                            userId = (String) responseResult.getData();
                         }
                     }
                 }, new Consumer<Throwable>() {

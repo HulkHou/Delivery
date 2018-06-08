@@ -36,7 +36,7 @@
         android:layout_alignTop="@+id/shop_name"
         android:layout_marginEnd="20dp"
         android:background="@drawable/btn_collect_bg"
-        android:src="@mipmap/list_collect_click_normal" />
+        android:src="@mipmap/list_collect_normal_normal" />
 
     <TextView
         android:id="@+id/shipping_start_fee_title"

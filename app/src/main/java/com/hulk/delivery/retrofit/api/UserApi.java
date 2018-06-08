@@ -104,6 +104,15 @@ public interface UserApi {
     @GET("t/collect")
     Observable<ResponseResult<ResponseDataObjectList<TCollect>>> getCollectShopList(@Header("Authorization") String authorization);
 
+    //收藏collect商家
+    @POST("t/collect")
+    Observable<ResponseResult> doCollectShop(@Header("Authorization") String authorization, @Body RequestBody body);
+
+    //取消收藏collect商家
+    @DELETE("t/collect/{id}")
+    Observable<ResponseResult> deleteCollectShop(@Header("Authorization") String authorization,
+                                                 @Path("id") String id);
+
     //获取Food列表
     @GET("t/food")
     Observable<ResponseResult<ResponseDataObjectList<TFood>>> getFoodList();

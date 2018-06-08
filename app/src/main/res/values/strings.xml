@@ -50,5 +50,8 @@
 
     <string name="success">成功！</string>
 
+    <item name="tag_collect_id" type="id"></item>
+    <item name="tag_collect_is" type="id"></item>
+
 
 </resources>
