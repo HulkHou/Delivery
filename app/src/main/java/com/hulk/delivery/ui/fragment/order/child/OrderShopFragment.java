@@ -78,7 +78,6 @@ public class OrderShopFragment extends SupportFragment
     private List<TCollect> collectShopList = new ArrayList<>();
     private Map<String, Integer> shopIdList = new HashMap<String, Integer>();
 
-    private String userId;
     private String collectType;
 
     private ResponseDataObjectList<TShop> responseDataShopList;
@@ -105,7 +104,6 @@ public class OrderShopFragment extends SupportFragment
         if (isLogin) {
             collectShopList.clear();
             getCollectShopList(view);
-            getUserId();
         }
         shopList.clear();
         getShopList(view);
@@ -177,7 +175,7 @@ public class OrderShopFragment extends SupportFragment
             };
             adapter.addAdapter(adapter_collection_title);
 
-            //我的收藏
+            //我的收藏列表
             SingleLayoutHelper layoutHelper = new SingleLayoutHelper();
             adapter_collection = new SubAdapter(_mActivity, layoutHelper, 1) {
                 @Override
@@ -301,9 +299,10 @@ public class OrderShopFragment extends SupportFragment
                             if (mCollectionShop.getTag(R.id.tag_collect_is).toString().equals("true")) {
                                 mCollectionShop.setTag(R.id.tag_collect_is, "false");
                                 deleteCollectShop(collectId);
+                                shopIdList.remove(collectItem.toString());
                             } else if (mCollectionShop.getTag(R.id.tag_collect_is).toString().equals("false")) {
                                 mCollectionShop.setTag(R.id.tag_collect_is, "true");
-                                doCollectShop(view, userId, collectItem);
+                                doCollectShop(view, collectItem);
                             }
                         } else {
                             ((SupportFragment) getParentFragment()).start(LoginByPasswordFragment.newInstance());
@@ -396,7 +395,6 @@ public class OrderShopFragment extends SupportFragment
         isLogin = LoginUtil.checkLogin(_mActivity);
         if (isLogin) {
             getCollectShopList(view);
-            getUserId();
         }
         initView(view);
     }
@@ -473,12 +471,11 @@ public class OrderShopFragment extends SupportFragment
     }
 
     //收藏店铺
-    private void doCollectShop(View view, String userId, Integer collectItem) {
+    private void doCollectShop(View view, Integer collectItem) {
 
         collectType = "1";
         JSONObject result = new JSONObject();
         try {
-            result.put("userId", userId);
             result.put("collectType", collectType);
             result.put("collectItem", collectItem);
         } catch (JSONException e) {
@@ -525,29 +522,6 @@ public class OrderShopFragment extends SupportFragment
                         //status等于200时为查询成功
                         if ("200".equals(code)) {
 
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        alertDialogUtils.showBasicDialogNoTitle(_mActivity, R.string.networkError);
-                    }
-                });
-    }
-
-    public void getUserId() {
-        String authorization = LoginUtil.getAuthorization();
-        Network.getUserApi().getUserId(authorization)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .as(bindLifecycle())
-                .subscribe(new Consumer<ResponseResult>() {
-                    @Override
-                    public void accept(@NonNull ResponseResult responseResult) throws Exception {
-                        String code = responseResult.getCode();
-                        //status等于200时为查询成功
-                        if ("200".equals(code)) {
-                            userId = (String) responseResult.getData();
                         }
                     }
                 }, new Consumer<Throwable>() {

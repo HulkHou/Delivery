@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -29,62 +30,89 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/food_collect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/shop_desc"
-            android:layout_below="@+id/food_name"
-            android:layout_marginEnd="13dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_alignBaseline="@id/food_name"
+            android:layout_marginLeft="50dp"
+            android:layout_toEndOf="@id/food_name"
             android:background="@drawable/add"
-            android:text="加入购物车"
+            android:text="加入收藏"
             android:textColor="@color/text_gold_color"
             android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/delivery_start_fee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/food_name"
-            android:layout_below="@+id/food_name"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="10dp"
-            android:text="起送标准：RM20"
-            android:textSize="@dimen/textSize_small" />
-
-        <TextView
-            android:id="@+id/delivery_fee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/delivery_start_fee"
-            android:layout_below="@+id/delivery_start_fee"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="10dp"
-            android:text="配送费：RM5"
-            android:textSize="@dimen/textSize_small" />
-
-        <TextView
-            android:id="@+id/delivery_free_fee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/delivery_start_fee"
-            android:layout_below="@+id/delivery_fee"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="10dp"
-            android:text="满50免运费"
-            android:textSize="@dimen/textSize_small" />
 
         <TextView
             android:id="@+id/shop_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/delivery_start_fee"
-            android:layout_below="@+id/delivery_free_fee"
+            android:layout_alignStart="@+id/food_name"
+            android:layout_below="@+id/food_name"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="我是一段shop描述，十佳餐厅是必须的！"
+            android:text="我是一段food描述"
             android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/food_sold_count_title_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/food_name"
+            android:layout_below="@+id/shop_desc"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="10dp"
+            android:text="月销"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/food_sold_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/food_sold_count_title_1"
+            android:layout_marginStart="2dp"
+            android:layout_toEndOf="@+id/food_sold_count_title_1"
+            android:text="21"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/food_sold_count_title_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/food_sold_count_title_1"
+            android:layout_marginStart="2dp"
+            android:layout_toEndOf="@+id/food_sold_count"
+            android:text="份"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/food_price_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/food_name"
+            android:layout_below="@+id/food_sold_count_title_1"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="10dp"
+            android:text="RM"
+            android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/food_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/food_price_title"
+            android:layout_marginStart="2dp"
+            android:layout_toEndOf="@+id/food_price_title"
+            android:text="21"
+            android:textSize="@dimen/textSize_small" />
+
+        <ImageView
+            android:id="@+id/food_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/food_price"
+            android:layout_alignEnd="@id/food_collect"
+            android:layout_below="@id/food_collect"
+            app:srcCompat="@mipmap/ic_add" />
 
     </RelativeLayout>
 </FrameLayout>

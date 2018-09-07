@@ -7,8 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.vlayout.DelegateAdapter;
@@ -17,7 +18,7 @@ import com.alibaba.android.vlayout.layout.LinearLayoutHelper;
 import com.alibaba.android.vlayout.layout.SingleLayoutHelper;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.hulk.delivery.R;
-import com.hulk.delivery.adapter.BannerAdapter;
+import com.hulk.delivery.adapter.BannerShopAdapter;
 import com.hulk.delivery.adapter.MainViewHolder;
 import com.hulk.delivery.adapter.SubAdapter;
 import com.hulk.delivery.adapter.TitleAdapter;
@@ -42,9 +43,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import me.yokeyword.fragmentation.SupportFragment;
 
-import static com.hulk.delivery.ui.fragment.order.child.OrderShopFragment.fragment;
-
-
 /**
  * Created by hulk-out on 2017/9/8.
  */
@@ -53,12 +51,13 @@ public class ShopDetailFragment extends SupportFragment {
 
     private View view;
     private static final String TAG = "ShopDetailFragment";
+    static ShopDetailFragment fragment;
 
     private DelegateAdapter shopDetailAdapter;
     private RecyclerView shopDetailRecyclerView;
     private SubAdapter adapter_shop_detail_title;
     private SubAdapter getAdapter_shop_detail;
-    private BannerAdapter bAdapter;
+    private BannerShopAdapter bannerShopAdapter;
 
     private RecyclerView recyclerView;
     private DelegateAdapter adapter;
@@ -75,10 +74,13 @@ public class ShopDetailFragment extends SupportFragment {
     private AlertDialogUtils alertDialogUtils = AlertDialogUtils.getInstance();
 
     @BindView(R.id.expandButton)
-    Button mExpandButton;
+    RelativeLayout mExpandButton;
 
     @BindView(R.id.expandableLayout)
     ExpandableRelativeLayout mExpandLayout;
+
+    @BindView(R.id.ic_info_angel)
+    ImageView icInfoAngel;
 
     public ShopDetailFragment() {
         // Required empty public constructor
@@ -165,27 +167,27 @@ public class ShopDetailFragment extends SupportFragment {
         };
         recyclerView.addOnScrollListener(onScrollListener);
 
-        //店铺信息标题
-        adapter_shop_detail_title = new TitleAdapter(_mActivity, getTitleHelper()) {
-            @Override
-            public void onBindViewHolder(MainViewHolder holder, int position) {
-                super.onBindViewHolder(holder, position);
-            }
-
-            //设置标题名称
-            @Override
-            protected String getText() {
-                return getString(R.string.shop_detail);
-            }
-
-            //设置标题左右图标
-            @Override
-            protected int[] getDrawables() {
-                return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
-            }
-
-        };
-        shopDetailAdapter.addAdapter(adapter_shop_detail_title);
+//        //店铺信息标题
+//        adapter_shop_detail_title = new TitleAdapter(_mActivity, getTitleHelper()) {
+//            @Override
+//            public void onBindViewHolder(MainViewHolder holder, int position) {
+//                super.onBindViewHolder(holder, position);
+//            }
+//
+//            //设置标题名称
+//            @Override
+//            protected String getText() {
+//                return getString(R.string.shop_detail);
+//            }
+//
+//            //设置标题左右图标
+//            @Override
+//            protected int[] getDrawables() {
+//                return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
+//            }
+//
+//        };
+//        shopDetailAdapter.addAdapter(adapter_shop_detail_title);
 
         //店铺信息列表
         SingleLayoutHelper layoutHelper = new SingleLayoutHelper();
@@ -204,8 +206,8 @@ public class ShopDetailFragment extends SupportFragment {
                 linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
                 recyclerView.setLayoutManager(linearLayoutManager);
 
-                bAdapter = new BannerAdapter(_mActivity, fragment, collectShopList);
-                recyclerView.setAdapter(bAdapter);
+                bannerShopAdapter = new BannerShopAdapter(_mActivity, fragment, collectShopList);
+                recyclerView.setAdapter(bannerShopAdapter);
 
                 recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
@@ -239,7 +241,7 @@ public class ShopDetailFragment extends SupportFragment {
             //设置标题左右图标
             @Override
             protected int[] getDrawables() {
-                return new int[]{R.mipmap.ic_index_left, R.mipmap.ic_index_right};
+                return new int[]{R.mipmap.ic_food_menu};
             }
 
         };
@@ -306,6 +308,13 @@ public class ShopDetailFragment extends SupportFragment {
     @OnClick(R.id.expandButton)
     public void setmExpandButton(View view) {
         mExpandLayout.toggle();
+        if (icInfoAngel.getTag().equals("down")) {
+            icInfoAngel.setImageResource(R.mipmap.ic_info_angel_up);
+            icInfoAngel.setTag("up");
+        } else {
+            icInfoAngel.setImageResource(R.mipmap.ic_info_angel_down);
+            icInfoAngel.setTag("down");
+        }
     }
 
 

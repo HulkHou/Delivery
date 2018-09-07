@@ -7,15 +7,17 @@
     <color name="white">#ffffffff</color>
 
     <color name="tab_unselect">#c9c9c9</color>
-    <color name="item_border_color">#F3F3F3</color>
+    <color name="item_border_color">#f3f3f3</color>
     <color name="item_default_color">#22EEEEEE</color>
     <color name="item_pressed_color">#CCCCCC</color>
     <color name="item_activated_color">#77CEEE</color>
+    <color name="item_border_color_red">#b21111</color>
 
     <color name="text_gold_color">#AF8A4E</color>
     <color name="text_black_color">#000000</color>
     <color name="text_blue_color">#3cafff</color>
     <color name="text_gray_color">#909497</color>
+    <color name="text_green_color">#11b25d</color>
 
     <color name="backgroundPrimary">#221912</color>
     <color name="backgroundSecondary">#FFFFFF</color>
@@ -26,5 +28,8 @@
     <color name="text_very_dark_gray_color">#353535</color>
     <color name="text_dark_gray_color">#9a9a9a</color>
     <color name="text_moderate_red_color">#d85b5b</color>
+    <color name="text_light_gray_color">#6b6b6b</color>
+
+
 
 </resources>

@@ -9,114 +9,153 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border_bg">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolBar_main"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:background="@mipmap/navbar_bg"
+            app:contentInsetStart="0dp">
+            app:contentInsetEnd="0dp">
+
+            <ImageView
+                android:id="@+id/iv_back_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                app:srcCompat="@mipmap/tabbar_back" />
+
+            <TextView
+                android:id="@+id/title_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="12dp"
+                android:text="桂林人"
+                android:textColor="@color/white"
+                android:textSize="@dimen/textSize_title" />
+
+            <ImageView
+                android:id="@+id/iv_collect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="12dp"
+                app:srcCompat="@mipmap/tabbar_collect_normal" />
+        </android.support.v7.widget.Toolbar>
+
         <ImageView
             android:id="@+id/image"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="92dp"
+            android:layout_height="92dp"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:padding="5dp"
+            android:layout_below="@+id/toolBar_main"
+            android:padding="14dp"
             android:src="@drawable/index_list" />
-
-        <TextView
-            android:id="@+id/shop_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/image"
-            android:text="蓝波湾牛肉面馆"
-            android:textColor="@color/text_black_color"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/shop_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/shop_name"
-            android:layout_below="@+id/shop_name"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="10dp"
-            android:text="口味："
-            android:textSize="@dimen/textSize_small" />
 
         <TextView
             android:id="@+id/shop_tag_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/shop_tag"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/shop_tag"
+            android:layout_alignTop="@id/image"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="22dp"
+            android:layout_toEndOf="@+id/image"
+            android:background="@drawable/label_bg"
             android:text="中式"
+            android:textColor="@color/text_dark_gray_color"
             android:textSize="@dimen/textSize_small" />
 
         <TextView
             android:id="@+id/shop_tag_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/shop_tag"
+            android:layout_alignBaseline="@+id/shop_tag_1"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/shop_tag_1"
+            android:background="@drawable/label_bg"
             android:text="日式"
+            android:textColor="@color/text_dark_gray_color"
             android:textSize="@dimen/textSize_small" />
 
-        <TextView
+        <ImageView
             android:id="@+id/shop_phone_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/shop_tag"
-            android:layout_below="@+id/shop_tag"
-            android:layout_marginStart="0dp"
+            android:layout_alignStart="@+id/shop_tag_1"
+            android:layout_below="@id/shop_tag_1"
             android:layout_marginTop="10dp"
-            android:text="电话："
-            android:textSize="@dimen/textSize_small" />
+            app:srcCompat="@mipmap/ic_phone" />
 
         <TextView
             android:id="@+id/shop_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/shop_phone_title"
-            android:layout_marginStart="10dp"
+            android:layout_alignBottom="@+id/shop_phone_title"
+            android:layout_marginStart="4dp"
             android:layout_toEndOf="@+id/shop_phone_title"
-            android:text="+60172021234"
+            android:text="+6012123456789"
+            android:textColor="@color/text_dark_gray_color"
             android:textSize="@dimen/textSize_small" />
+
+        <TextView
+            android:id="@+id/delivery_free_fee_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/shop_phone_title"
+            android:layout_below="@+id/shop_phone_title"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/list_bg_promotion"
+            android:text="免运费"
+            android:textSize="@dimen/textSize_normal" />
 
         <TextView
             android:id="@+id/delivery_free_fee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/shop_tag"
-            android:layout_below="@+id/shop_phone_title"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="10dp"
+            android:layout_alignBaseline="@+id/delivery_free_fee_title"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/delivery_free_fee_title"
             android:text="满50免运费"
+            android:textColor="@color/text_dark_gray_color"
             android:textSize="@dimen/textSize_small" />
 
-        <TextView
-            android:id="@+id/shop_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/shop_tag"
-            android:layout_below="@+id/delivery_free_fee"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="10dp"
-            android:text="我是一段shop描述，十佳餐厅是必须的！"
-            android:textSize="@dimen/textSize_small" />
-
-        <Button
+        <RelativeLayout
             android:id="@+id/expandButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/shop_tag"
-            android:layout_below="@+id/shop_desc"
-            android:text="店铺详情" />
+            android:layout_alignBaseline="@+id/delivery_free_fee_title"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="14dp">
+
+            <TextView
+                android:id="@+id/expand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="详情"
+                android:textColor="@color/text_green_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <ImageView
+                android:id="@+id/ic_info_angel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@+id/expand"
+                android:tag="down"
+                app:srcCompat="@mipmap/ic_info_angel_down" />
+        </RelativeLayout>
 
         <com.github.aakira.expandablelayout.ExpandableRelativeLayout
             android:id="@+id/expandableLayout"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_below="@id/expandButton"
+            android:layout_height="350dp"
+            android:layout_below="@id/image"
+            android:layout_marginTop="10dp"
             app:ael_duration="0"
             app:ael_expanded="false"
             app:ael_interpolator="bounce"
@@ -126,111 +165,228 @@
                 android:id="@+id/delivery_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/name"
                 android:layout_below="@+id/expandButton"
-                android:layout_marginStart="0dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="10dp"
                 android:text="配送详情"
+                android:textColor="@color/text_very_dark_gray_color"
                 android:textSize="@dimen/textSize_title" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/delivery_detail"
+                android:background="@color/item_border_color"></View>
+
+            <TextView
+                android:id="@+id/delivery_start_fee_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/delivery_detail"
+                android:layout_below="@+id/delivery_detail"
+                android:layout_marginTop="10dp"
+                android:text="起送标准"
+                android:textColor="@color/text_very_dark_gray_color"
+                android:textSize="@dimen/textSize_small" />
 
             <TextView
                 android:id="@+id/delivery_start_fee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/delivery_detail"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
-                android:text="起送标准：RM20"
+                android:layout_alignBaseline="@+id/delivery_start_fee_title"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/delivery_start_fee_title"
+                android:text="RM20"
+                android:textColor="@color/text_light_gray_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_fee_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/delivery_start_fee_title"
+                android:layout_marginStart="30dp"
+                android:layout_toEndOf="@+id/delivery_start_fee"
+                android:text="配送费"
+                android:textColor="@color/text_very_dark_gray_color"
                 android:textSize="@dimen/textSize_small" />
 
             <TextView
                 android:id="@+id/delivery_fee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/delivery_start_fee"
-                android:layout_below="@+id/delivery_start_fee"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
-                android:text="配送费：RM5"
-                android:textSize="@dimen/textSize_small" />
-
-            <TextView
-                android:id="@+id/delivery_time_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/delivery_start_fee"
-                android:layout_below="@+id/delivery_fee"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
-                android:text="配送时间:"
-                android:textSize="@dimen/textSize_small" />
-
-            <TextView
-                android:id="@+id/delivery_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/delivery_time_title"
-                android:layout_marginStart="10dp"
-                android:layout_toEndOf="@+id/delivery_time_title"
-                android:text="11:00 -- 12:00"
+                android:layout_alignBaseline="@+id/delivery_fee_title"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/delivery_fee_title"
+                android:text="RM5"
+                android:textColor="@color/text_light_gray_color"
                 android:textSize="@dimen/textSize_small" />
 
             <TextView
                 android:id="@+id/delivery_least_time_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/delivery_start_fee"
-                android:layout_below="@+id/delivery_time_title"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
+                android:layout_alignBaseline="@+id/delivery_start_fee"
+                android:layout_marginStart="50dp"
+                android:layout_toEndOf="@+id/delivery_fee"
                 android:text="最少配送时间:"
+                android:textColor="@color/text_very_dark_gray_color"
                 android:textSize="@dimen/textSize_small" />
 
             <TextView
                 android:id="@+id/delivery_least_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/delivery_least_time_title"
-                android:layout_marginStart="10dp"
+                android:layout_alignBaseline="@+id/delivery_least_time_title"
+                android:layout_marginStart="8dp"
                 android:layout_toEndOf="@+id/delivery_least_time_title"
-                android:text="11:00 -- 12:00"
+                android:text="11:00-12:00"
+                android:textColor="@color/text_light_gray_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/delivery_start_fee_title"
+                android:layout_below="@+id/delivery_start_fee_title"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:text="配送时间"
+                android:textColor="@color/text_very_dark_gray_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/delivery_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/delivery_time_title"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/delivery_time_title"
+                android:text="11:00-12:00"
+                android:textColor="@color/text_light_gray_color"
                 android:textSize="@dimen/textSize_small" />
 
             <TextView
                 android:id="@+id/delivery_areal_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/delivery_start_fee"
+                android:layout_alignStart="@+id/delivery_fee_title"
                 android:layout_below="@+id/delivery_least_time_title"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
                 android:text="配送区域:"
+                android:textColor="@color/text_very_dark_gray_color"
                 android:textSize="@dimen/textSize_small" />
 
             <TextView
                 android:id="@+id/delivery_areal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/delivery_areal_title"
-                android:layout_marginStart="10dp"
+                android:layout_alignBaseline="@+id/delivery_areal_title"
+                android:layout_marginStart="8dp"
                 android:layout_toEndOf="@+id/delivery_areal_title"
                 android:text="KLCC  Bukit BinTang"
+                android:textColor="@color/text_light_gray_color"
                 android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/shop_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/delivery_detail"
+                android:layout_below="@+id/delivery_time_title"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="18dp"
+                android:text="店铺详情"
+                android:textColor="@color/text_very_dark_gray_color"
+                android:textSize="@dimen/textSize_title" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_below="@+id/delivery_time_title"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="26dp"
+                android:layout_toEndOf="@+id/shop_detail"
+                android:background="@color/item_border_color"></View>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rl_shop_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/delivery_start_fee"
-                android:layout_below="@+id/delivery_areal_title"
+                android:layout_alignStart="@+id/shop_detail"
+                android:layout_below="@+id/shop_detail"
                 android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
                 android:background="@color/item_border_color"
                 android:clipToPadding="true"
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:requiresFadingEdge="none"
                 android:scrollbars="none" />
+
+            <TextView
+                android:id="@+id/shop_address_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/shop_detail"
+                android:layout_below="@+id/rl_shop_detail"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="-20dp"
+                android:text="地址"
+                android:textColor="@color/text_very_dark_gray_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/shop_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/shop_address_title"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/shop_address_title"
+                android:text="KLCC  Bukit BinTang Suasana Bukit Ceylon No.2, Persiaran Raja Chulan 50200, Kuala Lumpur, MALAYSIA"
+                android:textColor="@color/text_light_gray_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/shop_service_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/shop_detail"
+                android:layout_below="@+id/shop_address_title"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="16dp"
+                android:text="营业时间"
+                android:textColor="@color/text_very_dark_gray_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <TextView
+                android:id="@+id/shop_service_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/shop_service_time_title"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/shop_service_time_title"
+                android:text="9:00-22:00"
+                android:textColor="@color/text_light_gray_color"
+                android:textSize="@dimen/textSize_small" />
+
+            <Button
+                android:id="@+id/reportButton"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignStart="@+id/shop_detail"
+                android:layout_below="@+id/shop_service_time_title"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/report"
+                android:text="举报该餐厅"
+                android:textColor="@color/item_border_color_red"
+                android:textSize="@dimen/textSize_normal" />
 
         </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 

@@ -17,7 +17,7 @@
             android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:background="@mipmap/ic_back" />
+            android:background="@mipmap/tabbar_back" />
 
         <TextView
             android:layout_width="wrap_content"
